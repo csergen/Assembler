@@ -1,5 +1,12 @@
 #include "util.h"
 
+/**
+ * @brief This function opens the file.
+ * 
+ * @param _filepath 
+ * @param _mode 
+ * @return StreamObject* 
+ */
 StreamObject *open_stream(char *_filepath, char *_mode)
 {
     StreamObject *temp_streamObject = malloc(sizeof(StreamObject));
@@ -27,6 +34,12 @@ StreamObject *open_stream(char *_filepath, char *_mode)
     return temp_streamObject;
 }
 
+/**
+ * @brief This function closes the file.
+ * 
+ * @param _streamObject 
+ * @return boolean
+ */
 bool close_stream(StreamObject *_streamObject)
 {
     int status = false;

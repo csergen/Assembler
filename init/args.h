@@ -3,6 +3,14 @@
 
 #include <limits.h>
 
+/**
+ * @brief This function returns the argument value entered by the user
+ *        [ ./Executable {argument} ]
+ * 
+ * @param argc
+ * @param argv 
+ * @return char* 
+ */
 char *argparse(int argc, char **argv)
 {
     char *_filepath = malloc(sizeof(_filepath)*FILENAME_MAX);
