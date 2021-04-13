@@ -9,6 +9,8 @@ set (SRCS
 	assembler.c 
 	init/args.h
 	init/util.c 
-	init/util.h)
+	init/util.h
+	init/tokenizer.c
+	init/tokenizer.h)
 
 add_executable(Assembler ${SRCS})
