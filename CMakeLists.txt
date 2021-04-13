@@ -7,6 +7,7 @@ include_directories(init)
 
 set (SRCS 
 	assembler.c 
+	init/args.h
 	init/util.c 
 	init/util.h)
 
