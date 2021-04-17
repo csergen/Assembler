@@ -1,5 +1,5 @@
-line	word	row    column  type
-----    ----    ----   ------  -----
+line	word	colstrt colend  type
+----    ----    ------  ------  -----
 0	HRK	0	2	2
 0	AX	4	5	2
 0	,	6	6	3
