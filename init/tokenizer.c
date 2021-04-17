@@ -60,25 +60,39 @@ next_state(char *source, int *c, char *curchr, int *curtype)
 static inline void
 add_char(char *word, char curchr)
 {
-    char *buffer = (char *) malloc(sizeof(word) * sizeof(curchr) + 1);
-
-    strcpy(buffer, word);
-    strcat(buffer, &curchr);
-    memcpy(word, buffer, strlen(buffer) + strlen(word) + 1);
-    free(buffer);
+    strncat(word, &curchr, 1);
 }
 
 static inline int
 get_word_type(char *word)
 {
+    if (strlen(word) == 1)
+        return get_char_type(word[0]);
+
+    int alpha_counter = 0;
+    int digit_counter = 0;
+
+    for (int i = 0; i < strlen(word); i++) {
+        if (isalpha(word[i]) != 0)
+            alpha_counter++;
+
+        if (isdigit(word[i]) != 0)
+            digit_counter++;
+    }
+
+    if (strlen(word) == digit_counter)
+        return NUMBER;
+
+    if (isalpha(word[0]) && (alpha_counter + digit_counter == strlen(word)))
+        return STRING;
+    
     return NAN;
 }
 
 
-TokenObject*
-tokenize(char *source)
+const int
+tokenize(char *source, TokenObject **tokens)
 {
-    TokenObject* tokens = (TokenObject*) malloc(sizeof(TokenObject));
     int lineno = 0;
     int lc = 0;
     int c = 0;
@@ -122,29 +136,38 @@ tokenize(char *source)
                 continue;
 
             case NEWLINE:
-                //add_char(tok->word, curchr);
+                add_char(tok->word, curchr);
                 next_state(source, &c, &curchr, &curtype);
                 lineno++;
                 break;
 
             case NAN:
-                exit(1);
+                return NAN;
 
         }
 
         if (tok) {
-            printf("%d\t%s\t%d\t%d\n", tok->lineno, tok->word, tok->colstart, tok->colend);
+            tokens[lc] = malloc(sizeof(tok));
 
-            int buffer_colend = tok->colend + 1;
+            tokens[lc]->word = malloc(sizeof(tok->word)+1);
+            strcpy(tokens[lc]->word, tok->word);
+
+            tokens[lc]->lineno = lineno;
+            tokens[lc]->colstart = tok->colstart;
+            tokens[lc]->colend = tok->colend;
+            tokens[lc]->type = get_word_type(tokens[lc]->word);
 
             tok = new_token();
-            tok->colstart = buffer_colend;
+            tok->colstart = tokens[lc]->colend + 1;
             tok->colend = tok->colstart;
             tok->lineno = lineno;
+            tok->type = 0;
 
             lc++;
         }
     }
     
-    return tokens;
+    free(tok->word);
+    free(tok);
+    return lc;
 }

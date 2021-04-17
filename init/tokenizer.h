@@ -10,16 +10,6 @@
 #define NEWLINE     0x06
 #define ENDMARKER   0x07
 #define WHITESPACE  0x08
-#define OFFSET      0x09
-
-
-#define ISEOF(x)            ((x) == ENDMARKER)
-#define ISTERMINAL(x)       ((x) < OFFSET)
-#define ISNONTERMINAL(x)    ((x) >= OFFSET)
-#define ISWHITESPACE(x)     ((x) == ENDMARKER || \
-                             (x) == NEWLINE   || \
-                             (x) == INDENT    || \
-                             (x) == DEDENT)
 
 typedef struct 
 {
@@ -32,6 +22,6 @@ typedef struct
 
 
 static TokenObject* new_token(void);
-TokenObject* tokenize(char*);
+const int tokenize(char*, TokenObject**);
 
 #endif
