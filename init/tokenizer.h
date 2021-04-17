@@ -31,7 +31,7 @@ typedef struct
 } TokenObject;
 
 
-static TokenObject* new_token(char*, int, int, int, int);
+static TokenObject* new_token(void);
 TokenObject* tokenize(char*);
 
 #endif

@@ -7,24 +7,18 @@
 
 
 static TokenObject*
-new_token(char* word,
-          int lineno,
-          int colstart,
-          int colend,
-          int type)
+new_token(void)
 {
    TokenObject *tok = (TokenObject *) malloc(sizeof(TokenObject));
    
    if (tok == NULL)
       return NULL;
 
-   tok->word = (char *) malloc(sizeof(word)+1);
-   strcpy(tok->word, word);
-
-   tok->lineno = lineno;
-   tok->colstart = colstart;
-   tok->colend = colend;
-   tok->type = type;
+   tok->word = (char *) malloc(sizeof(tok->word)+1);
+   tok->lineno = 0;
+   tok->colstart = 0;
+   tok->colend = 0;
+   tok->type = 0;
 
    return tok;
 }
@@ -86,38 +80,71 @@ tokenize(char *source)
 {
     TokenObject* tokens = (TokenObject*) malloc(sizeof(TokenObject));
     int lineno = 0;
-    int colstart = 0;
-    int colend = 0;
     int lc = 0;
     int c = 0;
     char curchr;
     int curtype;
-    char* word = malloc(sizeof(word));
+    TokenObject *tok = new_token();
     
     next_state(source, &c, &curchr, &curtype);
-    while (c <= strlen(source))
+    while (c < strlen(source))
     {
         switch (curtype) {
             case STRING:
                 do {
-                    add_char(word, curchr);
+                    add_char(tok->word, curchr);
                     next_state(source, &c, &curchr, &curtype);
-                    colend++;
+                    tok->colend++;
                 } while (curtype == STRING || curtype == NUMBER);
-                colend--;
+                tok->colend--;
                 break;
-            
-            case NEWLINE:
-            case WHITESPACE:
-                printf("%s\t%d\t%d\t%c\n", word, colstart, colend, curchr);
+
+            case NUMBER:
+                do {
+                    add_char(tok->word, curchr);
+                    next_state(source, &c, &curchr, &curtype);
+                    tok->colend++;
+                } while (curtype == NUMBER);
+                tok->colend--;
+                break;
+
+            case COMMA:
+            case LSQB:
+            case RSQB:
+                add_char(tok->word, curchr);
                 next_state(source, &c, &curchr, &curtype);
-                memset(word, 0, strlen(word));
-                colend += 2;
-                colstart = colend;
                 break;
+
+            case WHITESPACE:
+                next_state(source, &c, &curchr, &curtype);
+                tok->colstart++;
+                tok->colend++;
+                continue;
+
+            case NEWLINE:
+                //add_char(tok->word, curchr);
+                next_state(source, &c, &curchr, &curtype);
+                lineno++;
+                break;
+
+            case NAN:
+                exit(1);
+
+        }
+
+        if (tok) {
+            printf("%d\t%s\t%d\t%d\n", tok->lineno, tok->word, tok->colstart, tok->colend);
+
+            int buffer_colend = tok->colend + 1;
+
+            tok = new_token();
+            tok->colstart = buffer_colend;
+            tok->colend = tok->colstart;
+            tok->lineno = lineno;
+
+            lc++;
         }
     }
     
-    free(word);   
     return tokens;
 }
