@@ -27,8 +27,8 @@ get_char_type(char curchr)
         return NEWLINE;
     case ' ':
         return WHITESPACE;
-    default:
-        return OFFSET;
+    //default:
+        //return OFFSET;
     }
 
     return NAN;
@@ -133,6 +133,11 @@ tokenize(char *source)
         
         case OFFSET:
             return NULL;
+
+        default:
+            add_char(tok->word, curchr);
+            next_state(source, &c, &curchr, &curtype);
+            break;
         }
 
         if (tok)
@@ -154,7 +159,12 @@ tokenize(char *source)
 
     free(tok->word);
     free(tok);
+    TokenNode *end_token = new_token();
+    end_token->type = ENDMARKER;
+    memset(end_token->word, 0, sizeof(end_token->word));
+    add_token(root, end_token);
 
     root = root->next;
     return root;
 }
+
