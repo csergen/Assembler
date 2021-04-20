@@ -1,32 +1,34 @@
 #include "util.h"
-#include "tokenizer.h"
-#include "assembler.h"
 #include "args.h"
 
+#include "node.h"
 
-int main(int argc, char **argv) 
+#include "tokenizer.h"
+#include "parser.h"
+
+int main(int argc, char **argv)
 {
-    char* m_file_path = argparse(argc, argv);
+    char *m_file_path = argparse(argc, argv);
 
     StreamObject *streamObject = open_stream(m_file_path, "r");
+    if (streamObject == NULL)
+        exit(EXIT_FAILURE);
+
     char *f_source = read_stream(streamObject);
-    
-    TokenObject **tokens = (TokenObject**) malloc(sizeof(TokenObject*)*streamObject->size);
-    const int token_size = tokenize(f_source, tokens);
-    
-    /* // Tokenizer output
-    for (int i = 0; i < token_size; i++)
-    {
-        if (tokens[i]->type == NEWLINE) 
-            tokens[i]->word = "\\n";
-        printf("%d\t%s\t%d\t%d\t%d\n", tokens[i]->lineno, tokens[i]->word, tokens[i]->colstart, tokens[i]->colend, tokens[i]->type);
+
+    //TokenObject **tokens = (TokenObject**) malloc(sizeof(TokenObject*)*streamObject->size);
+    //const int token_size = tokenize(f_source, tokens);
+    TokenNode *tk = tokenize(f_source);
+    tk = tk->next;
+    //Tokenizer output
+    while (tk) {
+        printf("%s\t%d\t%d\t%d\n", tk->word, tk->colstart, tk->colend, tk->type);
+        tk = tk->next;
     }
-    */
 
-    for (int i = 0; i < streamObject->size; i++) 
-        free(tokens[i]);
-    free(tokens);
+    parse(tk);
 
+    free(tk);
     free(m_file_path);
     free(f_source);
 

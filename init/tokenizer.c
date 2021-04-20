@@ -5,25 +5,7 @@
 
 #include "tokenizer.h"
 
-
-static TokenObject*
-new_token(void)
-{
-   TokenObject *tok = (TokenObject *) malloc(sizeof(TokenObject));
-   
-   if (tok == NULL)
-      return NULL;
-
-   tok->word = (char *) malloc(sizeof(tok->word)+1);
-   tok->lineno = 0;
-   tok->colstart = 0;
-   tok->colend = 0;
-   tok->type = 0;
-
-   return tok;
-}
-
-static inline int
+static int
 get_char_type(char curchr)
 {
     if (isdigit(curchr))
@@ -33,37 +15,38 @@ get_char_type(char curchr)
 
     switch (curchr)
     {
-        case ',':
-            return COMMA;
-        case '[':
-            return LSQB;
-        case ']':
-            return RSQB;
-        case '\n':
-            return NEWLINE;
-        case ' ':
-            return WHITESPACE;
-        case '\0':
-            return ENDMARKER;
+    case ',':
+        return COMMA;
+    case '[':
+        return LSQB;
+    case ']':
+        return RSQB;
+    case ':':
+        return COLON;
+    case '\n':
+        return NEWLINE;
+    case ' ':
+        return WHITESPACE;
+    default:
+        return OFFSET;
     }
 
     return NAN;
 }
 
-static inline void
+static void
 next_state(char *source, int *c, char *curchr, int *curtype)
 {
     *curchr = source[(*c)++];
+    if (curchr == NULL)
+        *curchr = '\n';
     *curtype = get_char_type(*curchr);
 }
 
 static inline void
-add_char(char *word, char curchr)
-{
-    strncat(word, &curchr, 1);
-}
+add_char(char *word, char curchr) { strncat(word, &curchr, 1); }
 
-static inline int
+static int
 get_word_type(char *word)
 {
     if (strlen(word) == 1)
@@ -72,7 +55,8 @@ get_word_type(char *word)
     int alpha_counter = 0;
     int digit_counter = 0;
 
-    for (int i = 0; i < strlen(word); i++) {
+    for (int i = 0; i < strlen(word); i++)
+    {
         if (isalpha(word[i]) != 0)
             alpha_counter++;
 
@@ -85,89 +69,91 @@ get_word_type(char *word)
 
     if (isalpha(word[0]) && (alpha_counter + digit_counter == strlen(word)))
         return STRING;
-    
+
     return NAN;
 }
 
-
-const int
-tokenize(char *source, TokenObject **tokens)
+TokenNode*
+tokenize(char *source)
 {
     int lineno = 0;
     int lc = 0;
     int c = 0;
     char curchr;
     int curtype;
-    TokenObject *tok = new_token();
-    
+    //TokenObject *tok = new_token();
+    TokenNode *root = new_token();
+    TokenNode *tok = new_token();
+
     next_state(source, &c, &curchr, &curtype);
     while (c < strlen(source))
     {
-        switch (curtype) {
-            case STRING:
-                do {
-                    add_char(tok->word, curchr);
-                    next_state(source, &c, &curchr, &curtype);
-                    tok->colend++;
-                } while (curtype == STRING || curtype == NUMBER);
-                tok->colend--;
-                break;
-
-            case NUMBER:
-                do {
-                    add_char(tok->word, curchr);
-                    next_state(source, &c, &curchr, &curtype);
-                    tok->colend++;
-                } while (curtype == NUMBER);
-                tok->colend--;
-                break;
-
-            case COMMA:
-            case LSQB:
-            case RSQB:
+        switch (curtype)
+        {
+        case STRING:
+            do
+            {
                 add_char(tok->word, curchr);
                 next_state(source, &c, &curchr, &curtype);
-                break;
-
-            case WHITESPACE:
-                next_state(source, &c, &curchr, &curtype);
-                tok->colstart++;
                 tok->colend++;
-                continue;
+            } while (curtype == STRING || curtype == NUMBER);
+            tok->colend--;
+            break;
 
-            case NEWLINE:
+        case NUMBER:
+            do
+            {
                 add_char(tok->word, curchr);
                 next_state(source, &c, &curchr, &curtype);
-                lineno++;
-                break;
+                tok->colend++;
+            } while (curtype == NUMBER);
+            tok->colend--;
+            break;
 
-            case NAN:
-                return NAN;
+        case WHITESPACE:
+            next_state(source, &c, &curchr, &curtype);
+            tok->colstart++;
+            tok->colend++;
+            continue;
 
+        case NEWLINE:
+            add_char(tok->word, curchr);
+            next_state(source, &c, &curchr, &curtype);
+            lineno++;
+            break;
+
+        case LSQB:
+        case RSQB:
+        case COLON:
+        case COMMA:
+        case NAN:
+            add_char(tok->word, curchr);
+            next_state(source, &c, &curchr, &curtype);
+            break;
+        
+        case OFFSET:
+            return NULL;
         }
 
-        if (tok) {
-            tokens[lc] = malloc(sizeof(tok));
+        if (tok)
+        {
+            tok->lineno = lineno;
+            tok->type = get_word_type(tok->word);
+            add_token(root, tok);
+            
+            int buffer_colend = tok->colend;
 
-            tokens[lc]->word = malloc(sizeof(tok->word)+1);
-            strcpy(tokens[lc]->word, tok->word);
-
-            tokens[lc]->lineno = lineno;
-            tokens[lc]->colstart = tok->colstart;
-            tokens[lc]->colend = tok->colend;
-            tokens[lc]->type = get_word_type(tokens[lc]->word);
-
-            tok = new_token();
-            tok->colstart = tokens[lc]->colend + 1;
+            tok->next = new_token();
+            tok = tok->next;
+            tok->colstart = buffer_colend + 1;
             tok->colend = tok->colstart;
             tok->lineno = lineno;
             tok->type = 0;
-
-            lc++;
         }
     }
-    
+
     free(tok->word);
     free(tok);
-    return lc;
+
+    return root;
 }

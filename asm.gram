@@ -1,0 +1,64 @@
+<program>: 
+        { <field> }
+
+<field>: 
+    [<label>] <opcode> ( <register>
+             | <memory_addressing> )
+             [ ',' 
+               <register> 
+             | <memory_addressing> 
+             | <constant> ] 
+             <newline>
+
+<opcode>: HRK 
+        | TOP
+        | CIK 
+        | CRP
+        | BOL 
+        | DEG 
+        | VE
+        | VEYA
+        | SS 
+        | SSD
+        | SN 
+        | SP
+
+<register>: AX 
+          | BX
+          | CX 
+          | DX
+
+<memory_addressing>: 
+        '[' ADDRESS ']'
+
+<constant>: 
+    <decimal> 
+  | <hexadecimal>
+  | <binary> 
+  | <octal>
+
+<decimal>: 
+    { 0-9 } 
+  | d'{ 0-9 }'
+
+<hexadecimal>:
+     h'{ 0-9a-F }'
+
+<binary>: 
+    b'{ 0 
+      | 1 }'
+
+<octal>:
+     o'{ 0-7 }'
+
+<newline>:
+    { [ '\n'   ]
+    | [ '\r\n' ] }
+
+
+
+
+
+
+
+

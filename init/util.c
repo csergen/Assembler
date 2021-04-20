@@ -21,13 +21,13 @@ StreamObject *open_stream(char *_filepath, char *_mode)
     if (!temp_streamObject->stream)
     {
         perror("File Does Not Exist");
-        exit(EXIT_FAILURE);
+        return NULL;
     }
 
     if (temp_streamObject->size == 0)
     {
         perror("File is empty");
-        exit(EXIT_FAILURE);
+        return NULL;
     }
 
     temp_streamObject->status = true;
@@ -42,11 +42,26 @@ StreamObject *open_stream(char *_filepath, char *_mode)
  */
 bool close_stream(StreamObject *_streamObject)
 {
-    int status = false;
-    if (_streamObject->status)
+    int status = 1;
+
+    if (_streamObject == NULL)
+        fprintf(stdout, "Stream object is not exist");
+    else if (_streamObject->status)
     {
-        status = fclose(_streamObject->stream) ? false : true;
-        if (status) free(_streamObject);
+        status = fclose(_streamObject->stream) ? 1 : 0;
+        if (status == 0) 
+        { 
+            _streamObject->stream = NULL;
+            _streamObject->path = NULL;
+            _streamObject->size = 0;
+            _streamObject->status = NULL;
+            _streamObject->mode = NULL;
+
+            free(_streamObject->stream);
+            free(_streamObject->mode);
+            free(_streamObject);
+            _streamObject = NULL;
+        }
     }
     else
         fprintf(stdout, "File is already closed");
@@ -71,6 +86,7 @@ char *read_stream(StreamObject *_streamObject)
 
     while ((m_line=fgetc(_streamObject->stream)) != EOF)
         m_destination[m_line_counter++] = m_line;
+    m_destination[m_line_counter++] = m_line;
 
     return m_destination;
 }
