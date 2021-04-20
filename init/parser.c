@@ -105,12 +105,14 @@ field_stmt(void)
         {
             if (!memory_stmt())
                 return 0;
-        } else if (!register_stmt()) // HRK AX, BX, CX ....
+        }
+        else if (!register_stmt()) // HRK AX, BX, CX ....
             return 0;
 
         if (s_token->type == COMMA)
         {
             next_token();
+
             if (s_token->type == NUMBER)
                 next_token();
             else if (s_token->type == LSQB)
