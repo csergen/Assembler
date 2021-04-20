@@ -19,7 +19,6 @@ int main(int argc, char **argv)
     //TokenObject **tokens = (TokenObject**) malloc(sizeof(TokenObject*)*streamObject->size);
     //const int token_size = tokenize(f_source, tokens);
     TokenNode *tk = tokenize(f_source);
-    tk = tk->next;
     //Tokenizer output
     while (tk) {
         printf("%s\t%d\t%d\t%d\n", tk->word, tk->colstart, tk->colend, tk->type);

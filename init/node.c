@@ -18,18 +18,7 @@ TokenNode *new_token(void)
 
 void add_token(TokenNode *r, TokenNode *n)
 {
-    TokenNode *temp = new_token();
-    strcpy(temp->word, n->word);
-    temp->type = n->type;
-    temp->colstart = n->colstart;
-    temp->colend = n->colend;
-    temp->lineno = n->lineno;
-
-    if (r == NULL)
-    {
-        r = temp;
-    }
-    else if (n != NULL)
+    if (n != NULL)
     {
         TokenNode *temp = new_token();
         strcpy(temp->word, n->word);

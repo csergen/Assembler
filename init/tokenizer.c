@@ -155,5 +155,6 @@ tokenize(char *source)
     free(tok->word);
     free(tok);
 
+    root = root->next;
     return root;
 }
