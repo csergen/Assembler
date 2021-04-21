@@ -1,7 +1,7 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
 #include "tokenizer.h"
 
@@ -13,8 +13,7 @@ get_char_type(char curchr)
     else if (isalpha(curchr))
         return STRING;
 
-    switch (curchr)
-    {
+    switch (curchr) {
     case ',':
         return COMMA;
     case '[':
@@ -23,19 +22,21 @@ get_char_type(char curchr)
         return RSQB;
     case ':':
         return COLON;
+    case '.':
+        return DOT;
+    case '-':
+        return MINUS;
     case '\n':
         return NEWLINE;
     case ' ':
         return WHITESPACE;
-    //default:
-        //return OFFSET;
     }
 
     return NAN;
 }
 
 static void
-next_state(char *source, int *c, char *curchr, int *curtype)
+next_state(char* source, int* c, char* curchr, int* curtype)
 {
     *curchr = source[(*c)++];
     if (curchr == NULL)
@@ -44,55 +45,71 @@ next_state(char *source, int *c, char *curchr, int *curtype)
 }
 
 static inline void
-add_char(char *word, char curchr) { strncat(word, &curchr, 1); }
+add_char(char* word, char curchr) { strncat(word, &curchr, 1); }
 
 static int
-get_word_type(char *word)
+get_word_type(char* word)
 {
     if (strlen(word) == 1)
         return get_char_type(word[0]);
 
+    if (strcmp(word, "HRK") == 0
+        || strcmp(word, "TOP") == 0
+        || strcmp(word, "CIK") == 0
+        || strcmp(word, "CRP") == 0
+        || strcmp(word, "BOL") == 0
+        || strcmp(word, "DEG") == 0
+        || strcmp(word, "VE") == 0
+        || strcmp(word, "VEYA") == 0
+        || strcmp(word, "SS") == 0
+        || strcmp(word, "SSD") == 0
+        || strcmp(word, "SN") == 0
+        || strcmp(word, "SP") == 0)
+        return OPCODE;
+
+    if (strcmp(word, "AX") == 0
+        || strcmp(word, "BX") == 0
+        || strcmp(word, "CX") == 0
+        || strcmp(word, "DX") == 0)
+        return REGISTER;
+
     int alpha_counter = 0;
     int digit_counter = 0;
 
-    for (int i = 0; i < strlen(word); i++)
+    for (int i = 0; i < strlen(word); i++) 
     {
         if (isalpha(word[i]) != 0)
             alpha_counter++;
 
-        if (isdigit(word[i]) != 0)
+        else if (isdigit(word[i]) != 0)
             digit_counter++;
     }
 
     if (strlen(word) == digit_counter)
-        return NUMBER;
+        return CONSTANT;
 
     if (isalpha(word[0]) && (alpha_counter + digit_counter == strlen(word)))
-        return STRING;
+        return LABEL;
 
     return NAN;
 }
 
 TokenNode*
-tokenize(char *source)
+tokenize(char* source)
 {
     int lineno = 0;
     int lc = 0;
     int c = 0;
     char curchr;
     int curtype;
-    //TokenObject *tok = new_token();
-    TokenNode *root = new_token();
-    TokenNode *tok = new_token();
+    TokenNode* root = new_token();
+    TokenNode* tok = new_token();
 
     next_state(source, &c, &curchr, &curtype);
-    while (c < strlen(source))
-    {
-        switch (curtype)
-        {
+    while (c < strlen(source)) {
+        switch (curtype) {
         case STRING:
-            do
-            {
+            do {
                 add_char(tok->word, curchr);
                 next_state(source, &c, &curchr, &curtype);
                 tok->colend++;
@@ -101,8 +118,7 @@ tokenize(char *source)
             break;
 
         case NUMBER:
-            do
-            {
+            do {
                 add_char(tok->word, curchr);
                 next_state(source, &c, &curchr, &curtype);
                 tok->colend++;
@@ -130,7 +146,7 @@ tokenize(char *source)
             add_char(tok->word, curchr);
             next_state(source, &c, &curchr, &curtype);
             break;
-        
+
         case OFFSET:
             return NULL;
 
@@ -140,12 +156,11 @@ tokenize(char *source)
             break;
         }
 
-        if (tok)
-        {
+        if (tok) {
             tok->lineno = lineno;
             tok->type = get_word_type(tok->word);
             add_token(root, tok);
-            
+
             int buffer_colend = tok->colend;
 
             tok->next = new_token();
@@ -159,7 +174,7 @@ tokenize(char *source)
 
     free(tok->word);
     free(tok);
-    TokenNode *end_token = new_token();
+    TokenNode* end_token = new_token();
     end_token->type = ENDMARKER;
     memset(end_token->word, 0, sizeof(end_token->word));
     add_token(root, end_token);
@@ -167,4 +182,3 @@ tokenize(char *source)
     root = root->next;
     return root;
 }
-

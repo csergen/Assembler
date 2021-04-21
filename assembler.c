@@ -21,11 +21,17 @@ int main(int argc, char **argv)
     TokenNode *tk = tokenize(f_source);
     TokenNode *tk_iter = tk;
     //Tokenizer output
-    while (tk) {
-        printf("%s\t%d\t%d\t%d\n", tk->word, tk->colstart, tk->colend, tk->type);
+
+    //parse(tk_iter);
+    while (tk)
+    {
+        if (tk->type == NEWLINE)
+            printf("\\n\t(%d)\n", tk->type);
+        else
+            printf("%s\t(%d)\n", tk->word, tk->type);
         tk = tk->next;
     }
-    parse(tk_iter);
+    
 
     free(tk);
     //free(tk_iter);

@@ -1,17 +1,28 @@
 #ifndef __INIT_TOKENIZER_H__
 #define __INIT_TOKENIZER_H__
 
-#define NAN         0x00
-#define NUMBER      0xA1
-#define STRING      0xA2
-#define COMMA	      0xA3
-#define LSQB	      0xA4
-#define RSQB        0xA5
-#define NEWLINE     0xA6
-#define ENDMARKER   0xA7
-#define WHITESPACE  0xA8
-#define COLON       0xA9
-#define OFFSET      0xAA
+#define NAN         0
+
+#define NUMBER      1
+#define STRING      2
+
+#define COMMA	    3
+#define LSQB	    4
+#define RSQB        5
+#define COLON       6
+#define MINUS       7
+#define DOT         8
+
+#define NEWLINE     9
+#define ENDMARKER   10
+#define WHITESPACE  11
+
+#define OPCODE      12
+#define REGISTER    13
+#define LABEL       14
+#define CONSTANT    15
+
+#define OFFSET      16
 
 #define ISEOF(x)            ((x) == ENDMARKER)
 #define ISTERMINAL(x)       ((x) < OFFSET)

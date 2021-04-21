@@ -13,7 +13,7 @@ StreamObject *open_stream(char *_filepath, char *_mode)
     temp_streamObject->path = _filepath;
     temp_streamObject->mode = _mode;
     temp_streamObject->stream = fopen(temp_streamObject->path,
-                                      temp_streamObject->mode);
+                                    temp_streamObject->mode);
     struct stat st;
     stat(temp_streamObject->path, &st);
     temp_streamObject->size = st.st_size;

@@ -3,6 +3,5 @@
 
 #include "tokenizer.h"
 
-//void parse(TokenObject**, int);
 void parse(TokenNode* tk);
 #endif

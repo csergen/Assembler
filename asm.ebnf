@@ -2,11 +2,8 @@ program = field, { field };
 
 field 
 = [label],
-  opcode,
-  (register | memory_addressing)
-  [',',
-    (register | memory_addressing | constant)
-  ]
+  opcode, (register | memory_addressing)
+  [',', (register | memory_addressing | constant)]
   newline;
 
 label 
