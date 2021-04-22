@@ -6,6 +6,9 @@
 #include "tokenizer.h"
 #include "parser.h"
 
+#include "vm.h"
+
+
 int main(int argc, char **argv)
 {
     char *m_file_path = argparse(argc, argv);
@@ -22,7 +25,7 @@ int main(int argc, char **argv)
     TokenNode *tk_iter = tk;
     //Tokenizer output
 
-    //parse(tk_iter);
+    /*//parse(tk_iter);
     while (tk)
     {
         if (tk->type == NEWLINE)
@@ -31,8 +34,9 @@ int main(int argc, char **argv)
             printf("%s\t(%d)\n", tk->word, tk->type);
         tk = tk->next;
     }
-    
-
+    */
+        
+    run();
     free(tk);
     //free(tk_iter);
     free(m_file_path);
