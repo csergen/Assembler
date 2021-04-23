@@ -86,7 +86,6 @@ char *read_stream(StreamObject *_streamObject)
 
     while ((m_line=fgetc(_streamObject->stream)) != EOF)
         m_destination[m_line_counter++] = m_line;
-    m_destination[m_line_counter++] = m_line;
 
     return m_destination;
 }

@@ -274,6 +274,4 @@ reserved_instruction_table[INSTRUCTION_OFFSET][INSTRUCTION_OFFSET] = {
 };
 
 
-void run( void );
-
 #endif

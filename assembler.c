@@ -35,8 +35,8 @@ int main(int argc, char **argv)
         tk = tk->next;
     }
     */
-        
-    run();
+    
+    load_program("../out.hex");   
     free(tk);
     //free(tk_iter);
     free(m_file_path);
