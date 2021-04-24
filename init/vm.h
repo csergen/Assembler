@@ -152,20 +152,9 @@ veya reg(cx), immediate		0110 10 11	6B
 veya reg(dx), immediate		0110 11	11	6F
 
 ========================DEG========================
-deg reg(ax), reg(?)		0111 00 01	71
-deg reg(bx), reg(?)		0111 01 01	75
-deg reg(cx), reg(?)		0111 10 01	79
-deg reg(dx), reg(?)		0111 11 01	7D
-
-deg reg(ax), memory		0111 00 10	72
-deg reg(bx), memory		0111 01 10	76
-deg reg(cx), memory		0111 10 10	7A
-deg reg(dx), memory		0111 11 10	7E
-
-deg reg(ax), immediate		0111 00 11	73
-deg reg(bx), immediate		0111 01	11	77
-deg reg(cx), immediate		0111 10 11	7B
-deg reg(dx), immediate		0111 11	11	7F
+deg reg(?)		0111 00 01	71
+deg memory		0111 00 10	72
+deg immediate	0111 00 11	73
 
 ========================SS=========================
 ss branch			1000 00 00	80
@@ -174,10 +163,10 @@ ss branch			1000 00 00	80
 ssd branch			1001 00 00	90
 
 ========================SN=========================
-ss branch			1010 00 00	A0
+sn branch			1010 00 00	A0
 
 ========================SP=========================
-ssd branch			1011 00 00	B0
+sp branch			1011 00 00	B0
 ---------------------------------------------------
 */
 
@@ -247,9 +236,9 @@ reserved_instruction_table[INSTRUCTION_OFFSET][INSTRUCTION_OFFSET] = {
    0x63, 0x67, 0x6B, 0x6F,
    },
   {				// DEG
-   0x71, 0x75, 0x79, 0x7D,
-   0x72, 0x76, 0x7A, 0x7E,
-   0x73, 0x77, 0x7B, 0x7F,
+   0x71, 0x72, 0x73, 0x00,
+   0x00, 0x00, 0x00, 0x00,
+   0x00, 0x00, 0x00, 0x00,
    },
   {				// SS
    0x80, 0x00, 0x00, 0x00,
