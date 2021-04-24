@@ -8,7 +8,7 @@
 #define MEMORY_SIZE 0xF
 #define INSTRUCTION_SIZE 0x8
 
-static unsigned int CODE_SEGMENT_OFFSET = 10;
+static unsigned int CODE_SEGMENT_OFFSET = 220;
 static unsigned int DATA_SEGMENT_BEGIN = 221;
 
 static short int RAX[INSTRUCTION_SIZE];
@@ -34,7 +34,6 @@ static short int MEMORY[MEMORY_SIZE][INSTRUCTION_SIZE];
 static void
 hex2bin(short int hex, short int buffer[8])
 {
-   
     char chr_hex[2];
     char ch1;
     char ch2;
@@ -111,36 +110,42 @@ hex2bin(short int hex, short int buffer[8])
         buffer[3] = 1;
         break;
     case 'A':
+    case 'a':
         buffer[0] = 1;
         buffer[1] = 0;
         buffer[2] = 1;
         buffer[3] = 0;
         break;
     case 'B':
+    case 'b':
         buffer[0] = 1;
         buffer[1] = 0;
         buffer[2] = 1;
         buffer[3] = 1;
         break;
     case 'C':
+    case 'c':
         buffer[0] = 1;
         buffer[1] = 1;
         buffer[2] = 0;
         buffer[3] = 0;
         break;
     case 'D':
+    case 'd':
         buffer[0] = 1;
         buffer[1] = 1;
         buffer[2] = 0;
         buffer[3] = 1;
         break;
     case 'E':
+    case 'e':
         buffer[0] = 1;
         buffer[1] = 1;
         buffer[2] = 1;
         buffer[3] = 0;
         break;
     case 'F':
+    case 'f':
         buffer[0] = 1;
         buffer[1] = 1;
         buffer[2] = 1;
@@ -210,36 +215,42 @@ hex2bin(short int hex, short int buffer[8])
         buffer[7] = 1;
         break;
     case 'A':
+    case 'a':
         buffer[4] = 1;
         buffer[5] = 0;
         buffer[6] = 1;
         buffer[7] = 0;
         break;
     case 'B':
+    case 'b':
         buffer[4] = 1;
         buffer[5] = 0;
         buffer[6] = 1;
         buffer[7] = 1;
         break;
     case 'C':
+    case 'c':
         buffer[4] = 1;
         buffer[5] = 1;
         buffer[6] = 0;
         buffer[7] = 0;
         break;
     case 'D':
+    case 'd':
         buffer[4] = 1;
         buffer[5] = 1;
         buffer[6] = 0;
         buffer[7] = 1;
         break;
     case 'E':
+    case 'e':
         buffer[4] = 1;
         buffer[5] = 1;
         buffer[6] = 1;
         buffer[7] = 0;
         break;
     case 'F':
+    case 'f':
         buffer[4] = 1;
         buffer[5] = 1;
         buffer[6] = 1;
@@ -256,7 +267,7 @@ bin2hex(short int buffer[8])
     for (int i = 0; i < 8; i++)
         other[i] = buffer[i] + '0';
 
-    return strtol(other, NULL, 16);
+    return strtol(other, NULL, 2);
 }
 
 static void
@@ -277,16 +288,18 @@ reset(short int _other[8])
 static void
 increase(short int _other[8])
 {
-
+    short int temp = bin2hex(_other);
+    temp++;
+    hex2bin(temp, _other);
 }
 
-static void and (short int _src1[8], short int _src2[8])
+static void and(short int _src1[8], short int _src2[8])
 {
     for (int i = 7; i >= 0; i--)
         _src1[i] = _src1[i] & _src2[i];
 }
 
-static void or (short int _src1[8], short int _src2[8])
+static void or(short int _src1[8], short int _src2[8])
 {
     for (int i = 7; i >= 0; i--)
         _src1[i] = _src1[i] | _src2[i];
@@ -305,16 +318,19 @@ void load_program(char* src_file)
 
     int i = 1;
     short int hex;
+    reset(RPC);
+    increase(RPC);
     while (fgets(buffer, sizeof(buffer), streamObject->stream)) {
         if (*buffer != '\n') {
             hex = strtol(buffer, NULL, 16);
-            hex2bin(hex, MEMORY[i++]);
+            hex2bin(hex, MEMORY[bin2hex(RPC)]);
+            increase(RPC);
         }
     }
 
-    //CODE_SEGMENT_OFFSET = RPC;
-    //DATA_SEGMENT_BEGIN = CODE_SEGMENT_OFFSET + 1;
-
+    CODE_SEGMENT_OFFSET = bin2hex(RPC);
+    DATA_SEGMENT_BEGIN = CODE_SEGMENT_OFFSET + 1;
+    
     MEMDUMP
     //run();
 }
