@@ -263,4 +263,6 @@ reserved_instruction_table[INSTRUCTION_OFFSET][INSTRUCTION_OFFSET] = {
 };
 
 
+void load_program(char *);
+
 #endif

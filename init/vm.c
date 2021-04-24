@@ -1,93 +1,3 @@
-/*
-
-    load_program(out.hex);
-    run_program();
-
-    
-    hrk: set(R, DR)
-    top: set(R, R+DR)
-    crp: set(R, R*DR)
-    cik: set(R, R-DR)
-    bol: set(R, R/DR)
-    ve: set(R, R&DR)
-    veya: set(R, R|DR)
-    deg: set(R, !DR)
-    ss: 
-        if (ZF == 0)
-            set(PC, DR)
-    ssd:
-        if (ZF != 0)
-            set(PC, DR)
-    sn:
-        set(PC, DR) if negative
-
-    execute:
-        match S:
-            case HRK:
-                hrk();
-            case TOP:
-                top();
-            case CRP:
-                crp();
-            case CIK:
-                cik();
-            case BOL:
-                bol();
-            case VE:
-                ve();
-            case VEYA:
-                veya();
-            case DEG:
-                deg();
-            case SS:
-                ss();
-            case SSD:
-                ssd();
-            case SN:
-                sn();
-            case SP:
-                sp();
-    decode:
-        S = IR[0-3] // opcode
-        R = IR[4-5] // register
-        M = IR[6-7] // mode
-
-        match M:
-            case MM:
-                set(AR, PC)
-                set(AR, M[AR])
-                set(DR, M[AR])
-            
-            case MI:
-                set(AR, PC)
-                set(DR, M[AR])
-            
-            case MR:
-                set(AR, PC)
-                set(DR, M[AR])
-
-            case MB:
-                set(AR, PC)
-                set(AR, M[AR])
-                set(DR, M[AR])
-
-    fetch:
-        set(AR, PC); // dest, src
-        set(IR, M[AR])
-        inc(PC);
-
-    load_program:
-        loop: M[PC++] = getline(src) is not EOF goto loop
-
-    run_program:
-        clear(ALL_REGISTER)
-
-        for (;;)
-            fetch()
-            decode()
-            execute()
-*/
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -98,204 +8,313 @@
 #define MEMORY_SIZE 0xF
 #define INSTRUCTION_SIZE 0x8
 
-static unsigned int INSTRUCTION_MEMORY_OFFSET = 220;
+static unsigned int CODE_SEGMENT_OFFSET = 10;
+static unsigned int DATA_SEGMENT_BEGIN = 221;
 
-static short int RAX;
-static short int RBX;
-static short int RCX;
-static short int RDX;
-static short int RIR;
-static short int RAR;
-static short int RDR;
-static short int RTR;
-static short int RPC = 1;
+static short int RAX[INSTRUCTION_SIZE];
+static short int RBX[INSTRUCTION_SIZE];
+static short int RCX[INSTRUCTION_SIZE];
+static short int RDX[INSTRUCTION_SIZE];
+static short int RIR[INSTRUCTION_SIZE];
+static short int RAR[INSTRUCTION_SIZE];
+static short int RDR[INSTRUCTION_SIZE];
+static short int RTR[INSTRUCTION_SIZE];
+static short int RPC[INSTRUCTION_SIZE];
 
-static bool ZF = 0;
-static bool CF = 1;
+static short int MEMORY[MEMORY_SIZE][INSTRUCTION_SIZE];
 
-static short int MEMORY[MEMORY_SIZE];
-
-#define MEMORY_DUMP              \
-    for (int i = 0; i < 10; i++) \
-        printf("0x..%0X\n", MEMORY[i]);
-
-#define REGISTER_DUMP printf("AX: (0x%0X)\tBX: (0x%0X)\nCX: (0x%0X)\tDX: (0x%0X)\nIR: (0x%0X)\tAR: (0x%0X)\nDR: (0x%0X)\tTR: (0x%0X)\nPC: (0x%0X)\tZF: (0x%0x)\tCF: (0x%0x)\n", \
-    RAX, RBX, RCX, RDX, RIR, RAR, RDR, RTR, RPC, ZF, CF);
-
-
-static void
-execute(short int opcode, short int reg, short int mode)
-{
-    switch (opcode) {
-    case HRK:
-        break;
-    case TOP:
-        break;
-    case CIK:
-        break;
+#define MEMDUMP                                     \
+    for (int i = 0; i < CODE_SEGMENT_OFFSET; i++) { \
+        printf("%0X\t", i);                         \
+        for (int j = 0; j < 8; j++)                 \
+            printf("%d", MEMORY[i][j]);             \
+        printf("\n");                               \
     }
-}
 
 static void
-decode()
+hex2bin(short int hex, short int buffer[8])
 {
-    short int opcode, reg, mode;
+   
+    char chr_hex[2];
+    char ch1;
+    char ch2;
+    
+    sprintf(chr_hex, "%0x", hex);
 
-    unsigned char buffer[2];
-    sprintf(buffer, "%0X", RIR); // dec(3) => str("3")
-
-    int i = 0;
-    if (strlen(buffer) == 1) {
-        opcode = 0;
+    if (strlen(chr_hex) == 1) {
+        ch1 = '0';
+        ch2 = chr_hex[0];
     } else {
-        switch (buffer[i]) {
-        case 'A':
-            opcode = 0xA;
-            break;
-        case 'B':
-            opcode = 0xB;
-            break;
-        default:
-            opcode = buffer[i] - '0';
-            break;
-        }
-        i++;
+        ch1 = chr_hex[0];
+        ch2 = chr_hex[1];
     }
 
-    switch (buffer[i]) {
+    switch (ch1) {
     case '0':
-        reg = 0;
-        mode = 0;
+        buffer[0] = 0;
+        buffer[1] = 0;
+        buffer[2] = 0;
+        buffer[3] = 0;
         break;
     case '1':
-        reg = 0;
-        mode = 1;
+        buffer[0] = 0;
+        buffer[1] = 0;
+        buffer[2] = 0;
+        buffer[3] = 1;
         break;
     case '2':
-        reg = 0;
-        mode = 2;
+        buffer[0] = 0;
+        buffer[1] = 0;
+        buffer[2] = 1;
+        buffer[3] = 0;
         break;
     case '3':
-        reg = 0;
-        mode = 3;
+        buffer[0] = 0;
+        buffer[1] = 0;
+        buffer[2] = 1;
+        buffer[3] = 1;
         break;
     case '4':
-        reg = 1;
-        mode = 0;
+        buffer[0] = 0;
+        buffer[1] = 1;
+        buffer[2] = 0;
+        buffer[3] = 0;
         break;
     case '5':
-        reg = 1;
-        mode = 1;
+        buffer[0] = 0;
+        buffer[1] = 1;
+        buffer[2] = 0;
+        buffer[3] = 1;
         break;
     case '6':
-        reg = 1;
-        mode = 2;
+        buffer[0] = 0;
+        buffer[1] = 1;
+        buffer[2] = 1;
+        buffer[3] = 0;
         break;
     case '7':
-        reg = 1;
-        mode = 3;
+        buffer[0] = 0;
+        buffer[1] = 1;
+        buffer[2] = 1;
+        buffer[3] = 1;
         break;
     case '8':
-        reg = 2;
-        mode = 0;
+        buffer[0] = 1;
+        buffer[1] = 0;
+        buffer[2] = 0;
+        buffer[3] = 0;
         break;
     case '9':
-        reg = 2;
-        mode = 1;
+        buffer[0] = 1;
+        buffer[1] = 0;
+        buffer[2] = 0;
+        buffer[3] = 1;
         break;
     case 'A':
-        reg = 2;
-        mode = 2;
+        buffer[0] = 1;
+        buffer[1] = 0;
+        buffer[2] = 1;
+        buffer[3] = 0;
         break;
     case 'B':
-        reg = 2;
-        mode = 3;
+        buffer[0] = 1;
+        buffer[1] = 0;
+        buffer[2] = 1;
+        buffer[3] = 1;
         break;
     case 'C':
-        reg = 3;
-        mode = 0;
+        buffer[0] = 1;
+        buffer[1] = 1;
+        buffer[2] = 0;
+        buffer[3] = 0;
         break;
     case 'D':
-        reg = 3;
-        mode = 1;
+        buffer[0] = 1;
+        buffer[1] = 1;
+        buffer[2] = 0;
+        buffer[3] = 1;
         break;
     case 'E':
-        reg = 3;
-        mode = 2;
+        buffer[0] = 1;
+        buffer[1] = 1;
+        buffer[2] = 1;
+        buffer[3] = 0;
         break;
     case 'F':
-        reg = 3;
-        mode = 3;
+        buffer[0] = 1;
+        buffer[1] = 1;
+        buffer[2] = 1;
+        buffer[3] = 1;
         break;
     }
 
-    switch (mode) {
-    case MM:
-    case MB:
-        RAR = RPC;
-        RAR = MEMORY[RAR];
-        RDR = MEMORY[RAR];
+    switch (ch2) {
+    case '0':
+        buffer[4] = 0;
+        buffer[5] = 0;
+        buffer[6] = 0;
+        buffer[7] = 0;
         break;
-    case MI:
-    case MR:
-        RAR = RPC;
-        RDR = MEMORY[RAR];
+    case '1':
+        buffer[4] = 0;
+        buffer[5] = 0;
+        buffer[6] = 0;
+        buffer[7] = 1;
+        break;
+    case '2':
+        buffer[4] = 0;
+        buffer[5] = 0;
+        buffer[6] = 1;
+        buffer[7] = 0;
+        break;
+    case '3':
+        buffer[4] = 0;
+        buffer[5] = 0;
+        buffer[6] = 1;
+        buffer[7] = 1;
+        break;
+    case '4':
+        buffer[4] = 0;
+        buffer[5] = 1;
+        buffer[6] = 0;
+        buffer[7] = 0;
+        break;
+    case '5':
+        buffer[4] = 0;
+        buffer[5] = 1;
+        buffer[6] = 0;
+        buffer[7] = 1;
+        break;
+    case '6':
+        buffer[4] = 0;
+        buffer[5] = 1;
+        buffer[6] = 1;
+        buffer[7] = 0;
+        break;
+    case '7':
+        buffer[4] = 0;
+        buffer[5] = 1;
+        buffer[6] = 1;
+        buffer[7] = 1;
+        break;
+    case '8':
+        buffer[4] = 1;
+        buffer[5] = 0;
+        buffer[6] = 0;
+        buffer[7] = 0;
+        break;
+    case '9':
+        buffer[4] = 1;
+        buffer[5] = 0;
+        buffer[6] = 0;
+        buffer[7] = 1;
+        break;
+    case 'A':
+        buffer[4] = 1;
+        buffer[5] = 0;
+        buffer[6] = 1;
+        buffer[7] = 0;
+        break;
+    case 'B':
+        buffer[4] = 1;
+        buffer[5] = 0;
+        buffer[6] = 1;
+        buffer[7] = 1;
+        break;
+    case 'C':
+        buffer[4] = 1;
+        buffer[5] = 1;
+        buffer[6] = 0;
+        buffer[7] = 0;
+        break;
+    case 'D':
+        buffer[4] = 1;
+        buffer[5] = 1;
+        buffer[6] = 0;
+        buffer[7] = 1;
+        break;
+    case 'E':
+        buffer[4] = 1;
+        buffer[5] = 1;
+        buffer[6] = 1;
+        buffer[7] = 0;
+        break;
+    case 'F':
+        buffer[4] = 1;
+        buffer[5] = 1;
+        buffer[6] = 1;
+        buffer[7] = 1;
         break;
     }
+}
 
-    execute(opcode, reg, mode);
-    RPC++;
+static short int
+bin2hex(short int buffer[8])
+{
+    char other[8];
+
+    for (int i = 0; i < 8; i++)
+        other[i] = buffer[i] + '0';
+
+    return strtol(other, NULL, 16);
 }
 
 static void
-fetch()
+set(short int _dest[8],
+    short int _src[8])
 {
-    RAR = RPC;
-    RIR = MEMORY[RAR];
-    RPC++;
+    for (int i = 0; i < 8; i++)
+        _dest[i] = _src[i];
 }
 
 static void
-run()
+reset(short int _other[8])
 {
-    RAX = 0;
-    RBX = 0;
-    RCX = 0;
-    RDX = 0;
-    RIR = 0;
-    RAR = 0;
-    RDR = 0;
-    RTR = 0;
-    RPC = 1;
+    for (int i = 0; i < 8; i++)
+        _other[i] = 0;
+}
 
-    for (int i = 0; i < INSTRUCTION_MEMORY_OFFSET / 2; i++) {
-        printf("\e[1;1H\e[2J");
-        REGISTER_DUMP
-        getc(stdin);
-        fetch();
-        decode();
-    }
+static void
+increase(short int _other[8])
+{
+
+}
+
+static void and (short int _src1[8], short int _src2[8])
+{
+    for (int i = 7; i >= 0; i--)
+        _src1[i] = _src1[i] & _src2[i];
+}
+
+static void or (short int _src1[8], short int _src2[8])
+{
+    for (int i = 7; i >= 0; i--)
+        _src1[i] = _src1[i] | _src2[i];
+}
+
+static void not(short int _src[8])
+{
+    for (int i = 7; i >= 0; i--)
+        _src[i] = _src[i] ? 0 : 1;
 }
 
 void load_program(char* src_file)
 {
     StreamObject* streamObject = open_stream(src_file, "r");
-    char* buffer = read_stream(streamObject);
+    char buffer[3];
 
-    char hex[2];
-    int c = 0;
-
-    for (int i = 0; i < strlen(buffer); i++) {
-        if (buffer[i] != '\n') {
-            hex[c++] = buffer[i];
-        } else {
-            if (RPC < INSTRUCTION_MEMORY_OFFSET)
-                MEMORY[RPC++] = (short int)strtol(hex, NULL, 16);
-            c = 0;
+    int i = 1;
+    short int hex;
+    while (fgets(buffer, sizeof(buffer), streamObject->stream)) {
+        if (*buffer != '\n') {
+            hex = strtol(buffer, NULL, 16);
+            hex2bin(hex, MEMORY[i++]);
         }
     }
 
-    INSTRUCTION_MEMORY_OFFSET = RPC;
+    //CODE_SEGMENT_OFFSET = RPC;
+    //DATA_SEGMENT_BEGIN = CODE_SEGMENT_OFFSET + 1;
 
+    MEMDUMP
     //run();
 }
