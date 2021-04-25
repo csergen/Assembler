@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     }
     */
     
-    load_program("../out2.hex");   
+    load_program("../out2.hex");
     free(tk);
     //free(tk_iter);
     free(m_file_path);
