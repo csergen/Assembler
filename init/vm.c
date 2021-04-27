@@ -5,6 +5,9 @@
 #include "util.h"
 #include "vm.h"
 
+#define GRN "\x1B[32m"
+#define RESET "\x1B[0m"
+
 #define MEMORY_SIZE 0xF
 #define INSTRUCTION_SIZE 0x8
 
@@ -23,16 +26,7 @@ static short int RPC[INSTRUCTION_SIZE];
 
 static short int MEMORY[MEMORY_SIZE][INSTRUCTION_SIZE];
 
-#define MEMDUMP                                   \
-    for (int i = 0; i < CODE_SEGMENT_OFFSET; i++) \
-    {                                             \
-        printf("%0X\t", i);                       \
-        for (int j = 0; j < 8; j++)               \
-            printf("%d", MEMORY[i][j]);           \
-        printf("\n");                             \
-    }
-
-#define REGDUMP                       \
+#define REGDUMP                                     \
     printf("RAX: 0x%0x(%d)\t", HEX(RAX), HEX(RAX)); \
     printf("RBX: 0x%0x(%d)\t", HEX(RBX), HEX(RBX)); \
     printf("RCX: 0x%0x(%d)\t", HEX(RCX), HEX(RCX)); \
@@ -42,6 +36,7 @@ static short int MEMORY[MEMORY_SIZE][INSTRUCTION_SIZE];
     printf("RDR: 0x%0x(%d)\t", HEX(RDR), HEX(RDR)); \
     printf("RTR: 0x%0x(%d)\n", HEX(RTR), HEX(RTR)); \
     printf("RPC: 0x%0x(%d)\n", HEX(RPC), HEX(RPC));
+
 
 // UTIL
 static void
@@ -288,6 +283,46 @@ HEX(short int buffer[8])
     return strtol(other, NULL, 2);
 }
 
+static void MEMDUMP()
+{
+    printf("===========================MEMORY=========================\n");
+    int i, j;
+
+    printf("%0x\t", 0);
+    for (i = 0; i < 8; i++)
+        printf("%d", MEMORY[0][i]);
+    printf("\n");
+
+    for (i = 1; i < CODE_SEGMENT_OFFSET+15; i += 2)
+    {
+        printf("%0x\t", i);
+        if (HEX(RPC) == i) {
+        
+            for (j = 0; j < 8; j++)
+                printf(GRN"%d", MEMORY[i][j]);
+            printf(" ");
+            for (j = 0; j < 8; j++)
+                printf("%d", MEMORY[i + 1][j]);
+            printf(RESET);
+        } else if (i > CODE_SEGMENT_OFFSET) {
+            for (j = 0; j < 8; j++) 
+                printf("?");
+            printf(" ");
+            for (j = 0; j < 8; j++) 
+                printf("?");
+        }
+        else
+        {
+            for (j = 0; j < 8; j++)
+                printf("%d", MEMORY[i][j]);
+            printf(" ");
+            for (j = 0; j < 8; j++)
+                printf("%d", MEMORY[i + 1][j]);
+        }
+        printf("\n");
+    }
+}
+
 static void
 set(short int _dest[8],
     short int _src)
@@ -353,8 +388,7 @@ fetch_decode_execute()
     unsigned char *opcode_char = (unsigned char *)malloc(5);
     unsigned char *register_char = (unsigned char *)malloc(3);
     unsigned char *mode_char = (unsigned char *)malloc(3);
-    
- 
+
     short int opcode_hex;
     short int register_hex;
     short int mode_hex;
@@ -382,7 +416,7 @@ fetch_decode_execute()
     mode_hex = strtol(mode_char, NULL, 2);
     free(mode_char);
 
-       /* ======================== EXECUTE ========================== */
+    /* ======================== EXECUTE ========================== */
     short int src_hex;
     switch (mode_hex)
     {
@@ -415,8 +449,9 @@ fetch_decode_execute()
         set(RDR, HEX(RAR));
         break;
     case MM:
+        break;
     case MB:
-        set(RDR, HEX(MEMORY[HEX(RAR)]));
+        set(RDR, HEX(RAR));
         break;
     }
 
@@ -444,19 +479,23 @@ fetch_decode_execute()
         {
         case AX:
             // RAX + RDR
-            set(RAX, HEX(RAX)+HEX(RDR));
+            set(RAX, HEX(RAX) + HEX(RDR));
+            set(MEMORY[0], HEX(RAX));
             break;
         case BX:
             // RBX + RDR
-            set(RBX, HEX(RBX)+HEX(RDR));
+            set(RBX, HEX(RBX) + HEX(RDR));
+            set(MEMORY[0], HEX(RBX));
             break;
         case CX:
             // RCX + RDR;
-            set(RCX, HEX(RCX)+HEX(RDR));
+            set(RCX, HEX(RCX) + HEX(RDR));
+            set(MEMORY[0], HEX(RCX));
             break;
         case DX:
             // RDX + RDR
-            set(RDX, HEX(RDX)+HEX(RDR));
+            set(RDX, HEX(RDX) + HEX(RDR));
+            set(MEMORY[0], HEX(RDX));
             break;
         }
         break;
@@ -465,19 +504,23 @@ fetch_decode_execute()
         {
         case AX:
             // RAX * RDR
-            set(RAX, HEX(RAX)*HEX(RDR));
+            set(RAX, HEX(RAX) * HEX(RDR));
+            set(MEMORY[0], HEX(RAX));
             break;
         case BX:
             // RBX * RDR
-            set(RBX, HEX(RBX)*HEX(RDR));
+            set(RBX, HEX(RBX) * HEX(RDR));
+            set(MEMORY[0], HEX(RBX));
             break;
         case CX:
             // RCX * RDR;
-            set(RCX, HEX(RCX)*HEX(RDR));
+            set(RCX, HEX(RCX) * HEX(RDR));
+            set(MEMORY[0], HEX(RCX));
             break;
         case DX:
             // RDX * RDR
-            set(RDX, HEX(RDX)*HEX(RDR));
+            set(RDX, HEX(RDX) * HEX(RDR));
+            set(MEMORY[0], HEX(RDX));
             break;
         }
         break;
@@ -486,19 +529,23 @@ fetch_decode_execute()
         {
         case AX:
             // RAX - RDR
-            set(RAX, HEX(RAX)-HEX(RDR));
+            set(RAX, HEX(RAX) - HEX(RDR));
+            set(MEMORY[0], HEX(RAX));
             break;
         case BX:
             // RBX - RDR
-            set(RBX, HEX(RBX)-HEX(RDR));
+            set(RBX, HEX(RBX) - HEX(RDR));
+            set(MEMORY[0], HEX(RBX));
             break;
         case CX:
             // RCX - RDR:
-            set(RCX, HEX(RCX)-HEX(RDR));
+            set(RCX, HEX(RCX) - HEX(RDR));
+            set(MEMORY[0], HEX(RCX));
             break;
         case DX:
             // RDX - RDR
-            set(RDX, HEX(RDX)-HEX(RDR));
+            set(RDX, HEX(RDX) - HEX(RDR));
+            set(MEMORY[0], HEX(RDX));
             break;
         }
         break;
@@ -507,25 +554,30 @@ fetch_decode_execute()
         {
         case AX:
             // RAX / RDR
-            set(RAX, HEX(RAX)/HEX(RDR));
+            set(RAX, HEX(RAX) / HEX(RDR));
+            set(MEMORY[0], HEX(RAX));
             break;
         case BX:
             // RBX / RDR
-            set(RBX, HEX(RBX)/HEX(RDR));
+            set(RBX, HEX(RBX) / HEX(RDR));
+            set(MEMORY[0], HEX(RBX));
             break;
         case CX:
             // RCX / RDR:
-            set(RCX, HEX(RCX)/HEX(RDR));
+            set(RCX, HEX(RCX) / HEX(RDR));
+            set(MEMORY[0], HEX(RCX));
             break;
         case DX:
             // RDX / RDR
-            set(RDX, HEX(RDX)/HEX(RDR));
+            set(RDX, HEX(RDX) / HEX(RDR));
+            set(MEMORY[0], HEX(RDX));
             break;
         }
         break;
-
+    case SP:
+        if (HEX(MEMORY[0]) > 0)
+            set(RPC, HEX(RDR));
     }
-
 }
 //#######################################################
 
@@ -553,6 +605,9 @@ run()
     while (HEX(RPC) <= CODE_SEGMENT_OFFSET)
     {
         printf("\e[1;1H\e[2J");
+        MEMDUMP();
+
+        printf("\n=========================REGISTER=========================\n");
         REGDUMP
         getc(stdin);
 
