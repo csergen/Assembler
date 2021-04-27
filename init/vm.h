@@ -190,6 +190,12 @@ sp branch			1011 00 00	B0
 #define CX 0x2
 #define DX 0x3
 
+#define IR 0x4
+#define AR 0x5
+#define DR 0x6
+#define TR 0x7
+#define PC 0x8
+
 // ADDRESSING MODE
 #define MB 0x0
 #define MR 0x1
@@ -308,11 +314,11 @@ static const short int
         {
             // DEG
             0x71,
+            0x75,
+            0x79,
+            0x7D,
             0x72,
             0x73,
-            0x00,
-            0x00,
-            0x00,
             0x00,
             0x00,
             0x00,
