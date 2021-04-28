@@ -5,15 +5,21 @@
 #include "util.h"
 #include "vm.h"
 
+#define RED "\x1B[31m"
 #define GRN "\x1B[32m"
+#define YELLOW "\x1B[33m"
+#define BLUE "\x1B[36m"
 #define RESET "\x1B[0m"
 
+// MEMORY PROPERTY
 #define MEMORY_SIZE 0xF
 #define INSTRUCTION_SIZE 0x8
 
+// MEMORY OFFSETS
 static unsigned int CODE_SEGMENT_OFFSET = 220;
 static unsigned int DATA_SEGMENT_BEGIN = 221;
 
+// REGISTERS
 static short int RAX[INSTRUCTION_SIZE];
 static short int RBX[INSTRUCTION_SIZE];
 static short int RCX[INSTRUCTION_SIZE];
@@ -24,21 +30,10 @@ static short int RDR[INSTRUCTION_SIZE];
 static short int RTR[INSTRUCTION_SIZE];
 static short int RPC[INSTRUCTION_SIZE];
 
+// MEMORY
 static short int MEMORY[MEMORY_SIZE][INSTRUCTION_SIZE];
 
-#define REGDUMP                                     \
-    printf("RAX: 0x%0x(%d)\t", HEX(RAX), HEX(RAX)); \
-    printf("RBX: 0x%0x(%d)\t", HEX(RBX), HEX(RBX)); \
-    printf("RCX: 0x%0x(%d)\t", HEX(RCX), HEX(RCX)); \
-    printf("RDX: 0x%0x(%d)\n", HEX(RDX), HEX(RDX)); \
-    printf("RIR: 0x%0x(%d)\t", HEX(RIR), HEX(RIR)); \
-    printf("RAR: 0x%0x(%d)\t", HEX(RAR), HEX(RAR)); \
-    printf("RDR: 0x%0x(%d)\t", HEX(RDR), HEX(RDR)); \
-    printf("RTR: 0x%0x(%d)\n", HEX(RTR), HEX(RTR)); \
-    printf("RPC: 0x%0x(%d)\n", HEX(RPC), HEX(RPC));
-
-
-// UTIL
+// ############################# UTILS #################################
 static void
 BIN(short int hex, short int buffer[8])
 {
@@ -283,46 +278,6 @@ HEX(short int buffer[8])
     return strtol(other, NULL, 2);
 }
 
-static void MEMDUMP()
-{
-    printf("===========================MEMORY=========================\n");
-    int i, j;
-
-    printf("%0x\t", 0);
-    for (i = 0; i < 8; i++)
-        printf("%d", MEMORY[0][i]);
-    printf("\n");
-
-    for (i = 1; i < CODE_SEGMENT_OFFSET+15; i += 2)
-    {
-        printf("%0x\t", i);
-        if (HEX(RPC) == i) {
-        
-            for (j = 0; j < 8; j++)
-                printf(GRN"%d", MEMORY[i][j]);
-            printf(" ");
-            for (j = 0; j < 8; j++)
-                printf("%d", MEMORY[i + 1][j]);
-            printf(RESET);
-        } else if (i > CODE_SEGMENT_OFFSET) {
-            for (j = 0; j < 8; j++) 
-                printf("?");
-            printf(" ");
-            for (j = 0; j < 8; j++) 
-                printf("?");
-        }
-        else
-        {
-            for (j = 0; j < 8; j++)
-                printf("%d", MEMORY[i][j]);
-            printf(" ");
-            for (j = 0; j < 8; j++)
-                printf("%d", MEMORY[i + 1][j]);
-        }
-        printf("\n");
-    }
-}
-
 static void
 set(short int _dest[8],
     short int _src)
@@ -368,7 +323,64 @@ static void not(short int _src[8])
         _src[i] = _src[i] ? 0 : 1;
 }
 
-//############# FETCH-DECODE-EXECUTE CYCLE ###############
+
+// ############################ DUMP ####################################
+static void
+MEMDUMP()
+{
+    printf(YELLOW"\n──────Memory───────────────────────────────────────────\n"RESET);
+    int i, j;
+
+    printf("%0x\t", 0);
+    for (i = 0; i < 8; i++)
+        printf("%d", MEMORY[0][i]);
+    printf("\n");
+
+    for (i = 1; i < CODE_SEGMENT_OFFSET+15; i += 2)
+    {
+        printf("%0x\t", i);
+        if (HEX(RPC) == i) {
+        
+            for (j = 0; j < 8; j++)
+                printf(GRN"%d", MEMORY[i][j]);
+            printf(" ");
+            for (j = 0; j < 8; j++)
+                printf("%d", MEMORY[i + 1][j]);
+            printf(RESET);
+        } else if (i > CODE_SEGMENT_OFFSET) {
+            for (j = 0; j < 8; j++) 
+                printf("?");
+            printf(" ");
+            for (j = 0; j < 8; j++) 
+                printf("?");
+        }
+        else
+        {
+            for (j = 0; j < 8; j++)
+                printf("%d", MEMORY[i][j]);
+            printf(" ");
+            for (j = 0; j < 8; j++)
+                printf("%d", MEMORY[i + 1][j]);
+        }
+        printf("\n");
+    }
+}
+
+static void 
+REGDUMP() {
+    printf(BLUE"\n──────Registers───────────────────────────────────────────\n"RESET);
+    printf("RAX: 0x%0x(%d)\t", HEX(RAX), HEX(RAX)); 
+    printf("RBX: 0x%0x(%d)\t", HEX(RBX), HEX(RBX)); 
+    printf("RCX: 0x%0x(%d)\t", HEX(RCX), HEX(RCX)); 
+    printf("RDX: 0x%0x(%d)\n", HEX(RDX), HEX(RDX)); 
+    printf("RIR: 0x%0x(%d)\t", HEX(RIR), HEX(RIR)); 
+    printf("RAR: 0x%0x(%d)\t", HEX(RAR), HEX(RAR)); 
+    printf("RDR: 0x%0x(%d)\t", HEX(RDR), HEX(RDR)); 
+    printf("RTR: 0x%0x(%d)\n", HEX(RTR), HEX(RTR)); 
+    printf("RPC: 0x%0x(%d)\n", HEX(RPC), HEX(RPC));
+}
+
+// ###################### FETCH-DECODE-EXECUTE CYCLE ####################
 static void
 fetch_decode_execute()
 {
@@ -427,19 +439,19 @@ fetch_decode_execute()
         switch (src_hex)
         {
         case AX:
-            printf("select AX, RDR <-- RAX: %0x\n", HEX(RAX));
+            printf("selected AX, RDR <-- RAX: %0x\n", HEX(RAX));
             set(RDR, HEX(RAX));
             break;
         case BX:
-            printf("select BX, RDR <-- RBX: %0x\n", HEX(RBX));
+            printf("selected BX, RDR <-- RBX: %0x\n", HEX(RBX));
             set(RDR, HEX(RBX));
             break;
         case CX:
-            printf("select CX, RDR <-- RCX: %0x\n", HEX(RCX));
+            printf("selected CX, RDR <-- RCX: %0x\n", HEX(RCX));
             set(RDR, HEX(RCX));
             break;
         case DX:
-            printf("select DX, RDR <-- RDX: %0x\n", HEX(RDX));
+            printf("selected DX, RDR <-- RDX: %0x\n", HEX(RDX));
             set(RDR, HEX(RDX));
             break;
         }
@@ -579,8 +591,8 @@ fetch_decode_execute()
             set(RPC, HEX(RDR));
     }
 }
-//#######################################################
 
+// ############################# MANAGER ################################
 static void
 init()
 {
@@ -607,8 +619,7 @@ run()
         printf("\e[1;1H\e[2J");
         MEMDUMP();
 
-        printf("\n=========================REGISTER=========================\n");
-        REGDUMP
+        REGDUMP();
         getc(stdin);
 
         fetch_decode_execute();
