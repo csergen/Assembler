@@ -37,8 +37,6 @@ static short int RPC = 0x01;
 static char MEMORY[MEMORY_SIZE][INSTRUCTION_SIZE+1];
 
 
-
-
 // ##################### BIN to HEX | HEX TO BIN #####################
 static char *BIN(const short int hex)
 {
@@ -192,6 +190,7 @@ static short int HEX(const char *binary)
     return strtol(binary, NULL, 2);
 }
 
+
 // ######################### MEMORY DUMP ############################
 static void MEMDUMP()
 {
@@ -209,7 +208,6 @@ static void MEMDUMP()
             printf("%s %s\n", MEMORY[j], MEMORY[j+1]);
         j+=2;
     }
-
 }
 
 // ########################### REGISTER DUMP ############################
@@ -226,21 +224,111 @@ static void REGDUMP() {
     printf("PC\t%s\t%0x\t%d\n", BIN(RPC), RPC, RPC);
 }
 
-static void set()
-{
-
-}
 
 // ####################### FETCH & DECODE & EXECUTE ######################
 static void ftdcex()
-{
+{   
+    /*********** FETCH ***********/
+    // opcode, register, mode
     RAR = RPC;
     RIR = HEX(MEMORY[RAR]);
     RPC++;
 
+    // address
     RAR = RPC;
     RAR = HEX(MEMORY[RAR]);
     RPC++;
+
+    /*********** DECODE ***********/
+    char *ir = BIN(RIR);
+
+    char *opcode_b = malloc(5);
+    char *reg_b = malloc(3);
+    char *mode_b = malloc(3);
+
+    short int opcode;
+    short int reg;
+    short int mode;
+
+    opcode_b[0] = ir[0];
+    opcode_b[1] = ir[1];
+    opcode_b[2] = ir[2];
+    opcode_b[3] = ir[3];
+    opcode_b[4] = '\0';
+    opcode = HEX(opcode_b); //strtol(opcode, NULL, 2);
+
+    reg_b[0] = ir[4];
+    reg_b[1] = ir[5];
+    reg_b[2] = '\0';
+    reg = HEX(reg_b); //strtol(reg, NULL, 2);
+
+    mode_b[0] = ir[6];
+    mode_b[1] = ir[7];
+    mode_b[2] = '\0';
+    mode = HEX(mode_b); //strtol(mode, NULL, 2);
+
+    free(ir);
+    free(opcode_b);
+    free(reg_b);
+    free(mode_b);
+
+    switch (mode)
+    {
+    case MR:
+        switch (RAR)
+        {
+        case AX:
+            RDR = RAX;
+            break;
+        case BX:
+            RDR = RBX;
+            break;
+        case CX:
+            RDR = RCX;
+            break;
+        case DX:
+            RDR = RDX;
+            break;
+        }
+        break;
+    case MI:
+        RDR = RAR;
+        break;
+    case MM:
+    case MB:
+        break;
+    }
+
+    /*********** EXECUTE ***********/
+    switch (opcode)
+    {
+    case HRK:
+        switch (reg)
+        {
+        case AX:
+            RAX = RDR;
+            break;
+        case BX:
+            RBX = RDR;
+            break;
+        case CX:
+            RCX = RDR;
+            break;
+        case DX:
+            RDX = RDR;
+            break;
+        }
+        break;
+    case TOP:
+        break;
+    case CRP:
+        break;
+    case CIK:
+        break;
+    case BOL:
+        break;
+    }
+
 }
 
 static void init()
