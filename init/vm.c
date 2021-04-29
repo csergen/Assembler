@@ -5,11 +5,16 @@
 #include "util.h"
 #include "vm.h"
 
-#define RED "\x1B[31m"
-#define GRN "\x1B[32m"
-#define YELLOW "\x1B[33m"
-#define BLUE "\x1B[36m"
-#define RESET "\x1B[0m"
+#define RED "\e[1;91m"
+#define GRN "\e[1;92m"
+#define WHITE "\e[1;97m"
+#define BLUE "\e[1;94m"
+
+#define BGRY "\x1b[40m"
+#define BRED "\x1b[40m"
+#define BGRN "\x1b[42m"
+
+#define RESET "\e[0m"
 
 // MEMORY PROPERTY
 #define MEMORY_SIZE 0xF
@@ -194,36 +199,92 @@ static short int HEX(const char *binary)
 // ######################### MEMORY DUMP ############################
 static void MEMDUMP()
 {
-    printf(YELLOW"\n──────────Memory────────────────────────────────────────\n"RESET);
+    printf(RED"\n──────────────────────────────────────────Memory───────\n"RESET);
 
     int i, j = 1;
-    printf("0\t%s\n", MEMORY[0]);
+    printf(WHITE "0\t%s\n" RESET, MEMORY[0]);
 
-    for (i = 1; i <= CODE_SEGMENT_END+5; i+=2)
+    for (i = 1; i <= CODE_SEGMENT_END; i+=2)
     {
         printf("%0X\t", i);
         if (RPC == i)
-            printf(GRN"%s %s\n"RESET, MEMORY[j], MEMORY[j+1]);
+            printf(GRN "%s %s\n" RESET, MEMORY[j], MEMORY[j+1]);
         else
-            printf("%s %s\n", MEMORY[j], MEMORY[j+1]);
-        j+=2;
+            printf(WHITE "%s" RESET " " WHITE "%s\n" RESET, MEMORY[j], MEMORY[j+1]);
+        j += 2;
     }
 }
 
 // ########################### REGISTER DUMP ############################
 static void REGDUMP() {
-    printf(BLUE"\n──────Registers───────────────────────────────────────────\n"RESET);
-    printf("AX\t%s\t%0x\t%d\n", BIN(RAX), RAX, RAX); 
-    printf("BX\t%s\t%0x\t%d\n", BIN(RBX), RBX, RBX); 
-    printf("CX\t%s\t%0x\t%d\n", BIN(RCX), RCX, RCX); 
-    printf("DX\t%s\t%0x\t%d\n\n", BIN(RDX), RDX, RDX); 
-    printf("IR\t%s\t%0x\t%d\n", BIN(RIR), RIR, RIR); 
-    printf("AR\t%s\t%0x\t%d\n", BIN(RAR), RAR, RAR); 
-    printf("DR\t%s\t%0x\t%d\n", BIN(RDR), RDR, RDR); 
-    printf("TR\t%s\t%0x\t%d\n\n", BIN(RTR), RTR, RTR); 
-    printf("PC\t%s\t%0x\t%d\n", BIN(RPC), RPC, RPC);
+    printf(BLUE"\n─────────────────────────────────────────Registers─────\n"RESET);
+    printf(BGRY"AX\t%s\t%0X\t%d\n"RESET, BIN(RAX), RAX, RAX); 
+    printf(WHITE"BX\t%s\t%0X\t%d\n", BIN(RBX), RBX, RBX); 
+    printf(BGRY"CX\t%s\t%0X\t%d\n"RESET, BIN(RCX), RCX, RCX); 
+    printf(WHITE"DX\t%s\t%0X\t%d\n\n", BIN(RDX), RDX, RDX); 
+    printf(BGRY"IR\t%s\t%0X\t%d\n"RESET, BIN(RIR), RIR, RIR); 
+    printf(WHITE"AR\t%s\t%0X\t%d\n", BIN(RAR), RAR, RAR); 
+    printf(BGRY"DR\t%s\t%0X\t%d\n"RESET, BIN(RDR), RDR, RDR); 
+    printf(WHITE"TR\t%s\t%0X\t%d\n\n", BIN(RTR), RTR, RTR); 
+    printf(BGRY"PC\t%s\t%0X\t%d\n"RESET, BIN(RPC), RPC, RPC);
 }
 
+
+// ######################### OPCODES ###############################
+static void top(short int destination)
+{
+    char *dest;
+    char *src = BIN(RDR);
+
+    switch (destination)
+    {
+    case AX:
+        dest = BIN(RAX);
+        break;
+    case BX:
+        dest = BIN(RBX);
+        break;
+    case CX:
+        dest = BIN(RCX);
+        break;
+    case DX:
+        dest = BIN(RDX);
+        break;
+    }
+
+    short int dest_sign_bit = dest[0] - '0';
+    short int src_sign_bit = src[0] - '0';
+}
+
+static void deg(short int destination)
+{
+    char *buffer = malloc(sizeof(8));
+    char *dr = BIN(RDR);
+
+    for (int i = 7; i >= 0; i--)
+        buffer[i] = dr[i] == '1' ? '0' : '1';
+
+    short int res = HEX(buffer);
+
+    switch (destination)
+    {
+    case AX:
+        RAX = res;
+        break;
+    case BX:
+        RBX = res;
+        break;
+    case CX:
+        RCX = res;
+        break;
+    case DX:
+        RDX = res;
+        break;
+    }
+
+    free(buffer);
+    free(dr);
+}
 
 // ####################### FETCH & DECODE & EXECUTE ######################
 static void ftdcex()
@@ -292,10 +353,11 @@ static void ftdcex()
         }
         break;
     case MI:
+    case MB:
         RDR = RAR;
         break;
     case MM:
-    case MB:
+        RDR = HEX(MEMORY[RAR]);
         break;
     }
 
@@ -320,12 +382,61 @@ static void ftdcex()
         }
         break;
     case TOP:
+        top(reg);
         break;
     case CRP:
         break;
     case CIK:
         break;
     case BOL:
+        break;
+    case VE:
+        switch (reg)
+        {
+        case AX:
+            RAX = RAX & RDR;
+            break;
+        case BX:
+            RBX = RBX & RDR;
+            break;
+        case CX:
+            RCX = RCX & RDR;
+            break;
+        case DX:
+            RDX = RDX & RDR;
+            break;
+        }
+        break;
+    case VEYA:
+        switch (reg)
+        {
+        case AX:
+            RAX = RAX | RDR;
+            break;
+        case BX:
+            RBX = RBX | RDR;
+            break;
+        case CX:
+            RCX = RCX | RDR;
+            break;
+        case DX:
+            RDX = RDX | RDR;
+            break;
+        }
+    case DEG:
+        deg(reg);
+        break;
+    case SS:
+        if (RTR == 0) RPC = RDR;
+        break;
+    case SSD:
+        if (RTR != 0) RPC = RDR;
+        break;
+    case SN:
+        if (RTR < 0) RPC = RDR;
+        break;
+    case SP:
+        if (RTR > 0) RPC = RDR;
         break;
     }
 
@@ -346,6 +457,8 @@ static void init()
     DATA_SEGMENT_BEGIN = RPC;
 
     RPC = 0x01;
+
+    strcpy(MEMORY[0], "00000000");
 }
 
 static void run()
