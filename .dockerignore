@@ -1,0 +1,15 @@
+Dockerfile
+.gdb_history
+.git
+.vscode
+.gitignore
+README.md
+*.gif
+*.png
+*.mp4
+resources/
+docs/
+example/
+*.md
+run
+build/

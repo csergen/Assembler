@@ -13,7 +13,7 @@ typedef struct
 {
       FILE *stream;
       char* path;
-      u_int32_t size;
+      int size;
       bool status;
       char* mode;
 } StreamObject;
