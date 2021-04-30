@@ -39,3 +39,4 @@ assembler
 run
 *.sh
 *.gdb_history
+*.hex
