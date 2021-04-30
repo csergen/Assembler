@@ -41,25 +41,24 @@ static int8_t RTR = 0x00;
 static int8_t RPC = 0x01;
 
 // MEMORY
-static char MEMORY[MEMORY_SIZE][INSTRUCTION_SIZE+1];
-
+static char MEMORY[MEMORY_SIZE][INSTRUCTION_SIZE + 1];
 
 // ########################### UTILS ###############################
 
-#define h(hex) hex&0xFF
+#define h(hex) hex & 0xFF
 
 static char *BIN(const int8_t hex)
 {
-    char *binary = (char*)malloc(9);
+    char *binary = (char *)malloc(9);
     char *hex_buffer = malloc(3);
 
-    sprintf(hex_buffer, "%02X", hex&0xFF);
+    sprintf(hex_buffer, "%02X", hex & 0xFF);
 
     char ch1 = hex_buffer[1];
     char ch2 = hex_buffer[0];
 
-    char *bin1 = malloc(sizeof(char)*4);
-    char *bin2 = malloc(sizeof(char)*4);
+    char *bin1 = malloc(sizeof(char) * 4);
+    char *bin2 = malloc(sizeof(char) * 4);
 
     switch (ch1)
     {
@@ -186,10 +185,9 @@ static char *BIN(const int8_t hex)
 }
 
 static int8_t HEX(const char *binary)
-{   
+{
     return h(strtol(binary, NULL, 2));
 }
-
 
 static int8_t not(int8_t d1)
 {
@@ -208,63 +206,61 @@ static int8_t not(int8_t d1)
 
 static inline int8_t sum(int8_t s1, int8_t s2)
 {
-    return s1 + s2;
+    return h(s1 + s2);
 }
 
 static inline int8_t mul(int8_t s1, int8_t s2)
 {
-    return s1 * s2;
+    return h(s1 * s2);
 }
 
 static inline int8_t sub(int8_t s1, int8_t s2)
 {
-    return s1 - s2;
+    return h(s1 - s2);
 }
-
 
 static inline int8_t divi(int8_t s1, int8_t s2)
 {
-    return s1 / s2;
+    return h(s1 / s2);
 }
-
-
 
 // ##################### MEMORY | REGISTER DUMP ######################
 static void MEMDUMP()
 {
-    printf(RED"\n──────────────────────────────────────────Memory───────\n"RESET);
+    printf(RED "\n──────────────────────────────────────────Memory───────\n" RESET);
 
     int i, j = 1;
-    printf(WHITE "0\t%s\n" RESET, MEMORY[0]);
+    printf(WHITE "00\t%s\n" RESET, MEMORY[0]);
 
-    for (i = 1; i <= CODE_SEGMENT_END; i+=2)
+    for (i = 1; i <= CODE_SEGMENT_END; i += 2)
     {
-        printf("%02X\t", i);
+        printf("%02x\t", i);
         if (RPC == i)
-            printf(GRN "%s %s\n" RESET, MEMORY[j], MEMORY[j+1]);
+            printf(GRN "%s %s\n" RESET, MEMORY[j], MEMORY[j + 1]);
         else
-            printf(WHITE "%s" RESET " " WHITE "%s\n" RESET, MEMORY[j], MEMORY[j+1]);
+            printf(WHITE "%s" RESET " " WHITE "%s\n"RESET, MEMORY[j], MEMORY[j + 1]);
+        
         j += 2;
     }
 }
 
-static void REGDUMP() {
-    printf(BLUE"\n─────────────────────────────────────────Registers─────\n"RESET);
-    printf(BGRY "AX\t%s\t%02X\t%d\n"  RESET, BIN(RAX), h(RAX), RAX); 
-    printf(WHITE"BX\t%s\t%02X\t%d\n"  RESET, BIN(RBX), h(RBX), RBX); 
-    printf(BGRY "CX\t%s\t%02X\t%d\n"  RESET, BIN(RCX), h(RCX), RCX); 
-    printf(WHITE"DX\t%s\t%02X\t%d\n\n"RESET, BIN(RDX), h(RDX), RDX); 
-    printf(BGRY "IR\t%s\t%02X\t%d\n"  RESET, BIN(RIR), h(RIR), RIR); 
-    printf(WHITE"AR\t%s\t%02X\t%d\n"  RESET, BIN(RAR), h(RAR), RAR); 
-    printf(BGRY "DR\t%s\t%02X\t%d\n"  RESET, BIN(RDR), h(RDR), RDR); 
-    printf(WHITE"TR\t%s\t%02X\t%d\n\n"RESET, BIN(RTR), h(RTR), RTR); 
-    printf(BGRY "PC\t%s\t%02X\t%d\n"  RESET, BIN(RPC), h(RPC), RPC);
+static void REGDUMP()
+{
+    printf(BLUE "\n─────────────────────────────────────────Registers─────\n" RESET);
+    printf(BGRY "AX\t%s\t%02X\t%d\n" RESET, BIN(RAX), h(RAX), RAX);
+    printf(WHITE "BX\t%s\t%02X\t%d\n" RESET, BIN(RBX), h(RBX), RBX);
+    printf(BGRY "CX\t%s\t%02X\t%d\n" RESET, BIN(RCX), h(RCX), RCX);
+    printf(WHITE "DX\t%s\t%02X\t%d\n\n" RESET, BIN(RDX), h(RDX), RDX);
+    printf(BGRY "IR\t%s\t%02X\t%d\n" RESET, BIN(RIR), h(RIR), RIR);
+    printf(WHITE "AR\t%s\t%02X\t%d\n" RESET, BIN(RAR), h(RAR), RAR);
+    printf(BGRY "DR\t%s\t%02X\t%d\n" RESET, BIN(RDR), h(RDR), RDR);
+    printf(WHITE "TR\t%s\t%02X\t%d\n\n" RESET, BIN(RTR), h(RTR), RTR);
+    printf(BGRY "PC\t%s\t%02X\t%d\n" RESET, BIN(RPC), h(RPC), RPC);
 }
-
 
 // #################### FETCH & DECODE & EXECUTE ###################
 static void ftdcex()
-{   
+{
     /*********** FETCH ***********/
     // opcode, register, mode
     RAR = RPC;
@@ -362,15 +358,19 @@ static void ftdcex()
         {
         case AX:
             RAX = sum(RAX, RDR);
+            RTR = RAX;
             break;
         case BX:
             RBX = sum(RBX, RDR);
+            RTR = RBX;
             break;
         case CX:
             RCX = sum(RCX, RDR);
+            RTR = RCX;
             break;
         case DX:
             RDX = sum(RDX, RDR);
+            RTR = RDX;
             break;
         }
         break;
@@ -379,15 +379,19 @@ static void ftdcex()
         {
         case AX:
             RAX = mul(RAX, RDR);
+            RTR = RAX;
             break;
         case BX:
             RBX = mul(RBX, RDR);
+            RTR = RBX;
             break;
         case CX:
             RCX = mul(RCX, RDR);
+            RTR = RCX;
             break;
         case DX:
             RDX = mul(RDX, RDR);
+            RTR = RDX;
             break;
         }
         break;
@@ -396,15 +400,19 @@ static void ftdcex()
         {
         case AX:
             RAX = sub(RAX, RDR);
+            RTR = RAX;
             break;
         case BX:
             RBX = sub(RBX, RDR);
+            RTR = RBX;
             break;
         case CX:
             RCX = sub(RCX, RDR);
+            RTR = RCX;
             break;
         case DX:
             RDX = sub(RDX, RDR);
+            RTR = RDX;
             break;
         }
         break;
@@ -413,15 +421,19 @@ static void ftdcex()
         {
         case AX:
             RAX = divi(RAX, RDR);
+            RTR = RAX;
             break;
         case BX:
             RBX = divi(RBX, RDR);
+            RTR = RBX;
             break;
         case CX:
             RCX = divi(RCX, RDR);
+            RTR = RCX;
             break;
         case DX:
             RDX = divi(RDX, RDR);
+            RTR = RDX;
             break;
         }
         break;
@@ -489,16 +501,20 @@ static void ftdcex()
         }
         break;
     case SS:
-        if (RTR == 0) RPC = RDR;
+        if (RTR == 0)
+            RPC = RDR;
         break;
     case SSD:
-        if (RTR != 0) RPC = RDR;
+        if (RTR != 0)
+            RPC = RDR;
         break;
     case SN:
-        if (RTR < 0) RPC = RDR;
+        if (RTR < 0)
+            RPC = RDR;
         break;
     case SP:
-        if (RTR > 0) RPC = RDR;
+        if (RTR > 0)
+            RPC = RDR;
         break;
     }
 }
@@ -514,7 +530,7 @@ static void init()
     RDR = h(0x00);
     RTR = h(0x00);
 
-    CODE_SEGMENT_END = RPC-1;
+    CODE_SEGMENT_END = RPC - 1;
     DATA_SEGMENT_BEGIN = RPC;
 
     RPC = h(0x01);

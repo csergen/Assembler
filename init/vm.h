@@ -153,7 +153,6 @@ veya reg(dx), immediate		0110 11	11	6F
 
 ========================DEG========================
 deg reg(?)		0111 00 01	71
-
 deg memory		0111 00 10	72
 deg immediate	0111 00 11	73
 
