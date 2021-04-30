@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.5)
 project(Assembler C)
 
 set(CMAKE_C_STANDARD 11)
@@ -20,18 +20,3 @@ set (SRCS
     init/vm.c)
 
 add_executable(Assembler ${SRCS})
-
-enable_testing()
-
-add_executable(test_init_util_open_stream
-    test/test_init_util_open_stream.c)
-
-add_executable(test_init_util_close_stream
-    test/test_init_util_close_stream.c)
-
-add_test(NAME
-    unit_test
-    COMMAND ${CMAKE_COMMAND}
-    -DCMD1=$<TARGET_FILE:test_init_util_open_stream>
-    -DCMD2=$<TARGET_FILE:test_init_util_close_stream>
-    -P ${CMAKE_CURRENT_SOURCE_DIR}/runtests.cmake)
