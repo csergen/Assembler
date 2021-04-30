@@ -7,15 +7,13 @@
 #include "util.h"
 #include "vm.h"
 
-#define RED "\e[1;91m"
-#define GRN "\e[1;92m"
+#define RED   "\e[1;91m"
+#define GRN   "\e[1;92m"
 #define WHITE "\e[1;97m"
-#define BLUE "\e[1;94m"
-
-#define BGRY "\x1b[40m"
-#define BRED "\x1b[40m"
-#define BGRN "\x1b[42m"
-
+#define BLUE  "\e[1;94m"
+#define BGRY  "\x1b[40m"
+#define BRED  "\x1b[40m"
+#define BGRN  "\x1b[42m"
 #define RESET "\e[0m"
 
 // MEMORY PROPERTY
@@ -44,9 +42,10 @@ static int8_t RPC = 0x01;
 static char MEMORY[MEMORY_SIZE][INSTRUCTION_SIZE + 1];
 
 // ########################### UTILS ###############################
-
+// mask
 #define h(hex) hex & 0xFF
 
+// hex to bin
 static char *BIN(const int8_t hex)
 {
     char *binary = (char *)malloc(9);
@@ -184,7 +183,8 @@ static char *BIN(const int8_t hex)
     return binary;
 }
 
-static int8_t HEX(const char *binary)
+// bin to hex
+static inline int8_t HEX(const char *binary)
 {
     return h(strtol(binary, NULL, 2));
 }
@@ -279,9 +279,9 @@ static void ftdcex()
     char *reg_b = malloc(3);
     char *mode_b = malloc(3);
 
-    short int opcode;
-    short int reg;
-    short int mode;
+    int8_t opcode;
+    int8_t reg;
+    int8_t mode;
 
     opcode_b[0] = ir[0];
     opcode_b[1] = ir[1];
@@ -470,6 +470,7 @@ static void ftdcex()
             RDX = RDX | RDR;
             break;
         }
+        break;
     case DEG:
         switch (mode)
         {
@@ -519,6 +520,7 @@ static void ftdcex()
     }
 }
 
+// ######################### MANAGER ###############################
 static void init()
 {
     RAX = h(0x00);
