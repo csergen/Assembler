@@ -20,3 +20,4 @@ set (SRCS
     init/vm.c)
 
 add_executable(Assembler ${SRCS})
+target_link_libraries(Assembler m)

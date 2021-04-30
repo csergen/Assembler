@@ -1,6 +1,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <math.h>
 
 #include "util.h"
 #include "vm.h"
@@ -27,38 +29,31 @@ static unsigned int CODE_SEGMENT_END;
 static unsigned int DATA_SEGMENT_BEGIN;
 static unsigned int DATA_SEGMENT_END = 0xff;
 
-// REGISTERS
-static short int RAX = 0x00;
-static short int RBX = 0x00;
-static short int RCX = 0x00;
-static short int RDX = 0x00;
-static short int RIR = 0x00;
-static short int RAR = 0x00;
-static short int RDR = 0x00;
-static short int RTR = 0x00;
-static short int RPC = 0x01;
+// REGISTERS (8 bit, MSB sign bit, max = 127, min = -128)
+static int8_t RAX = 0x00;
+static int8_t RBX = 0x00;
+static int8_t RCX = 0x00;
+static int8_t RDX = 0x00;
+static int8_t RIR = 0x00;
+static int8_t RAR = 0x00;
+static int8_t RDR = 0x00;
+static int8_t RTR = 0x00;
+static int8_t RPC = 0x01;
 
 // MEMORY
 static char MEMORY[MEMORY_SIZE][INSTRUCTION_SIZE+1];
 
 
-// ##################### BIN to HEX | HEX TO BIN #####################
-static char *BIN(const short int hex)
+// ########################### UTILS ###############################
+
+#define h(hex) hex&0xFF
+
+static char *BIN(const int8_t hex)
 {
     char *binary = (char*)malloc(9);
     char *hex_buffer = malloc(3);
 
-    sprintf(hex_buffer, "%0X", hex);
-
-    int hex_len = strlen(hex_buffer);
-
-    if (hex_len == 1)
-    {
-        char temp = hex_buffer[0];
-        hex_buffer[1] = temp;
-        hex_buffer[0] = '0';
-        hex_len = strlen(hex_buffer);
-    }
+    sprintf(hex_buffer, "%02X", hex&0xFF);
 
     char ch1 = hex_buffer[1];
     char ch2 = hex_buffer[0];
@@ -190,13 +185,51 @@ static char *BIN(const short int hex)
     return binary;
 }
 
-static short int HEX(const char *binary)
-{
-    return strtol(binary, NULL, 2);
+static int8_t HEX(const char *binary)
+{   
+    return h(strtol(binary, NULL, 2));
 }
 
 
-// ######################### MEMORY DUMP ############################
+static int8_t not(int8_t d1)
+{
+    char *buffer = malloc(sizeof(8));
+    char *dr = BIN(RDR);
+
+    for (int i = 7; i >= 0; i--)
+        buffer[i] = dr[i] == '1' ? '0' : '1';
+
+    int8_t res = HEX(buffer);
+    free(buffer);
+    free(dr);
+
+    return res;
+}
+
+static inline int8_t sum(int8_t s1, int8_t s2)
+{
+    return s1 + s2;
+}
+
+static inline int8_t mul(int8_t s1, int8_t s2)
+{
+    return s1 * s2;
+}
+
+static inline int8_t sub(int8_t s1, int8_t s2)
+{
+    return s1 - s2;
+}
+
+
+static inline int8_t divi(int8_t s1, int8_t s2)
+{
+    return s1 / s2;
+}
+
+
+
+// ##################### MEMORY | REGISTER DUMP ######################
 static void MEMDUMP()
 {
     printf(RED"\n──────────────────────────────────────────Memory───────\n"RESET);
@@ -206,7 +239,7 @@ static void MEMDUMP()
 
     for (i = 1; i <= CODE_SEGMENT_END; i+=2)
     {
-        printf("%0X\t", i);
+        printf("%02X\t", i);
         if (RPC == i)
             printf(GRN "%s %s\n" RESET, MEMORY[j], MEMORY[j+1]);
         else
@@ -215,78 +248,21 @@ static void MEMDUMP()
     }
 }
 
-// ########################### REGISTER DUMP ############################
 static void REGDUMP() {
     printf(BLUE"\n─────────────────────────────────────────Registers─────\n"RESET);
-    printf(BGRY"AX\t%s\t%0X\t%d\n"RESET, BIN(RAX), RAX, RAX); 
-    printf(WHITE"BX\t%s\t%0X\t%d\n", BIN(RBX), RBX, RBX); 
-    printf(BGRY"CX\t%s\t%0X\t%d\n"RESET, BIN(RCX), RCX, RCX); 
-    printf(WHITE"DX\t%s\t%0X\t%d\n\n", BIN(RDX), RDX, RDX); 
-    printf(BGRY"IR\t%s\t%0X\t%d\n"RESET, BIN(RIR), RIR, RIR); 
-    printf(WHITE"AR\t%s\t%0X\t%d\n", BIN(RAR), RAR, RAR); 
-    printf(BGRY"DR\t%s\t%0X\t%d\n"RESET, BIN(RDR), RDR, RDR); 
-    printf(WHITE"TR\t%s\t%0X\t%d\n\n", BIN(RTR), RTR, RTR); 
-    printf(BGRY"PC\t%s\t%0X\t%d\n"RESET, BIN(RPC), RPC, RPC);
+    printf(BGRY "AX\t%s\t%02X\t%d\n"  RESET, BIN(RAX), h(RAX), RAX); 
+    printf(WHITE"BX\t%s\t%02X\t%d\n"  RESET, BIN(RBX), h(RBX), RBX); 
+    printf(BGRY "CX\t%s\t%02X\t%d\n"  RESET, BIN(RCX), h(RCX), RCX); 
+    printf(WHITE"DX\t%s\t%02X\t%d\n\n"RESET, BIN(RDX), h(RDX), RDX); 
+    printf(BGRY "IR\t%s\t%02X\t%d\n"  RESET, BIN(RIR), h(RIR), RIR); 
+    printf(WHITE"AR\t%s\t%02X\t%d\n"  RESET, BIN(RAR), h(RAR), RAR); 
+    printf(BGRY "DR\t%s\t%02X\t%d\n"  RESET, BIN(RDR), h(RDR), RDR); 
+    printf(WHITE"TR\t%s\t%02X\t%d\n\n"RESET, BIN(RTR), h(RTR), RTR); 
+    printf(BGRY "PC\t%s\t%02X\t%d\n"  RESET, BIN(RPC), h(RPC), RPC);
 }
 
 
-// ######################### OPCODES ###############################
-static void top(short int destination)
-{
-    char *dest;
-    char *src = BIN(RDR);
-
-    switch (destination)
-    {
-    case AX:
-        dest = BIN(RAX);
-        break;
-    case BX:
-        dest = BIN(RBX);
-        break;
-    case CX:
-        dest = BIN(RCX);
-        break;
-    case DX:
-        dest = BIN(RDX);
-        break;
-    }
-
-    short int dest_sign_bit = dest[0] - '0';
-    short int src_sign_bit = src[0] - '0';
-}
-
-static void deg(short int destination)
-{
-    char *buffer = malloc(sizeof(8));
-    char *dr = BIN(RDR);
-
-    for (int i = 7; i >= 0; i--)
-        buffer[i] = dr[i] == '1' ? '0' : '1';
-
-    short int res = HEX(buffer);
-
-    switch (destination)
-    {
-    case AX:
-        RAX = res;
-        break;
-    case BX:
-        RBX = res;
-        break;
-    case CX:
-        RCX = res;
-        break;
-    case DX:
-        RDX = res;
-        break;
-    }
-
-    free(buffer);
-    free(dr);
-}
-
-// ####################### FETCH & DECODE & EXECUTE ######################
+// #################### FETCH & DECODE & EXECUTE ###################
 static void ftdcex()
 {   
     /*********** FETCH ***********/
@@ -382,13 +358,72 @@ static void ftdcex()
         }
         break;
     case TOP:
-        top(reg);
+        switch (reg)
+        {
+        case AX:
+            RAX = sum(RAX, RDR);
+            break;
+        case BX:
+            RBX = sum(RBX, RDR);
+            break;
+        case CX:
+            RCX = sum(RCX, RDR);
+            break;
+        case DX:
+            RDX = sum(RDX, RDR);
+            break;
+        }
         break;
     case CRP:
+        switch (reg)
+        {
+        case AX:
+            RAX = mul(RAX, RDR);
+            break;
+        case BX:
+            RBX = mul(RBX, RDR);
+            break;
+        case CX:
+            RCX = mul(RCX, RDR);
+            break;
+        case DX:
+            RDX = mul(RDX, RDR);
+            break;
+        }
         break;
     case CIK:
+        switch (reg)
+        {
+        case AX:
+            RAX = sub(RAX, RDR);
+            break;
+        case BX:
+            RBX = sub(RBX, RDR);
+            break;
+        case CX:
+            RCX = sub(RCX, RDR);
+            break;
+        case DX:
+            RDX = sub(RDX, RDR);
+            break;
+        }
         break;
     case BOL:
+        switch (reg)
+        {
+        case AX:
+            RAX = divi(RAX, RDR);
+            break;
+        case BX:
+            RBX = divi(RBX, RDR);
+            break;
+        case CX:
+            RCX = divi(RCX, RDR);
+            break;
+        case DX:
+            RDX = divi(RDX, RDR);
+            break;
+        }
         break;
     case VE:
         switch (reg)
@@ -424,7 +459,34 @@ static void ftdcex()
             break;
         }
     case DEG:
-        deg(reg);
+        switch (mode)
+        {
+        case MR:
+            switch (RAR)
+            {
+            case AX:
+                RAX = not(RDR);
+                break;
+            case BX:
+                RBX = not(RDR);
+                break;
+            case CX:
+                RCX = not(RDR);
+                break;
+            case DX:
+                RDX = not(RDR);
+                break;
+            }
+            break;
+        case MM:
+            strcpy(MEMORY[RAR], BIN(not(RDR)));
+            break;
+        case MI:
+            RDR = not(RDR);
+            break;
+        default:
+            exit(EXIT_FAILURE);
+        }
         break;
     case SS:
         if (RTR == 0) RPC = RDR;
@@ -439,24 +501,23 @@ static void ftdcex()
         if (RTR > 0) RPC = RDR;
         break;
     }
-
 }
 
 static void init()
 {
-    RAX = 0x00;
-    RBX = 0x00;
-    RCX = 0x00;
-    RDX = 0x00;
-    RIR = 0x00;
-    RAR = 0x00;
-    RDR = 0x00;
-    RTR = 0x00;
+    RAX = h(0x00);
+    RBX = h(0x00);
+    RCX = h(0x00);
+    RDX = h(0x00);
+    RIR = h(0x00);
+    RAR = h(0x00);
+    RDR = h(0x00);
+    RTR = h(0x00);
 
     CODE_SEGMENT_END = RPC-1;
     DATA_SEGMENT_BEGIN = RPC;
 
-    RPC = 0x01;
+    RPC = h(0x01);
 
     strcpy(MEMORY[0], "00000000");
 }
@@ -477,7 +538,7 @@ void load_program(char *src_file)
 {
     StreamObject *streamObject = open_stream(src_file, "r");
     char buffer[3];
-    short int hex;
+    int8_t hex;
     char *temp;
 
     while (fgets(buffer, sizeof(buffer), streamObject->stream))
@@ -493,5 +554,4 @@ void load_program(char *src_file)
 
     init();
     run();
-
 }
