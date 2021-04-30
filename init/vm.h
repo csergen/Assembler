@@ -314,11 +314,11 @@ static const short int
         {
             // DEG
             0x71,
-            0x75,
-            0x79,
-            0x7D,
             0x72,
             0x73,
+            0x00,
+            0x00,
+            0x00,
             0x00,
             0x00,
             0x00,
