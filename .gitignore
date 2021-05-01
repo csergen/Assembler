@@ -38,5 +38,6 @@ build/
 assembler
 run
 run-docker
+output/
 *.sh
 *.gdb_history
