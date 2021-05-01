@@ -6,7 +6,7 @@ TokenNode *new_token(void)
 {
     TokenNode *temp = (TokenNode *)malloc(sizeof(TokenNode));
 
-    temp->word = (char *)malloc(sizeof(char *) + 1);
+    temp->word = (char *)malloc(sizeof(char) + 1);
     temp->type = 0;
     temp->colstart = 0;
     temp->colend = 0;
