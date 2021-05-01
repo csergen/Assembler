@@ -28,4 +28,3 @@ set (SRCS
     core/Assemble/assemble.c)
 
 add_executable(Assembler ${SRCS})
-target_link_libraries(Assembler m)
