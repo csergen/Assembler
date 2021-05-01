@@ -1,9 +1,6 @@
 FROM ubuntu:18.04
 
-RUN apt-get update -y && \
-    apt-get install -y tzdata
-
-RUN apt-get install -y --no-install-recommends  \
+RUN apt-get update -y && apt-get install -y --no-install-recommends  \
                     gcc                         \
                     g++                         \
                     make                        \

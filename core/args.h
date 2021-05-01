@@ -19,7 +19,7 @@ char *argparse(int argc, char **argv)
     else
     {
         printf("Enter file path: ");
-        scanf("%s", _filepath);
+        scanf("%255s", _filepath);
         //fscanf(stdin, "%s", _filepath);
     }
 
