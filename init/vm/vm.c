@@ -16,18 +16,9 @@
 #define BGRN  "\x1b[42m"
 #define RESET "\e[0m"
 
-// MEMORY PROPERTY
-#define MEMORY_SIZE 0xF
-#define INSTRUCTION_SIZE 0x8
+// (8 bit, MSB sign bit, max = 127, min = -128)
 
-// MEMORY OFFSETS
-static unsigned int CODE_SEGMENT_BEGIN = 0x01;
-static unsigned int CODE_SEGMENT_END;
-
-static unsigned int DATA_SEGMENT_BEGIN;
-static unsigned int DATA_SEGMENT_END = 0xff;
-
-// REGISTERS (8 bit, MSB sign bit, max = 127, min = -128)
+// REGISTERS
 static int8_t RAX = 0x00;
 static int8_t RBX = 0x00;
 static int8_t RCX = 0x00;

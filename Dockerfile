@@ -15,7 +15,7 @@ RUN apt-get install -y --no-install-recommends  \
     rm -rf /var/lib/apt/lists/*
 
 COPY . /usr/src/assembler
-RUN mkdir "mkdir build"
+RUN mkdir "mkdir /usr/src/assembler/build"
 WORKDIR ./usr/src/assembler/build
 RUN cmake ..
 RUN make

@@ -106,7 +106,7 @@ tokenize(char* source)
     TokenNode* tok = new_token();
 
     next_state(source, &c, &curchr, &curtype);
-    while (c < strlen(source)) {
+    while (c <= strlen(source)) {
         switch (curtype) {
         case STRING:
             do {
@@ -142,6 +142,7 @@ tokenize(char* source)
         case RSQB:
         case COLON:
         case COMMA:
+        case MINUS:
         case NAN:
             add_char(tok->word, curchr);
             next_state(source, &c, &curchr, &curtype);
