@@ -7,14 +7,14 @@
 #include "util.h"
 #include "vm.h"
 
-#define RED   "\e[1;91m"
-#define GRN   "\e[1;92m"
-#define WHITE "\e[1;97m"
-#define BLUE  "\e[1;94m"
-#define BGRY  "\x1b[40m"
-#define BRED  "\x1b[40m"
-#define BGRN  "\x1b[42m"
-#define RESET "\e[0m"
+#define RED   "\x1B[31m"
+#define GRN   "\x1B[31m"
+#define WHITE "\x1B[31m"
+#define BLUE  "\x1B[31m"
+#define BGRY  "\x1B[31m"
+#define BRED  "\x1B[31m"
+#define BGRN  "\x1B[31m"
+#define RESET "\033[0m"
 
 // (8 bit, MSB sign bit, max = 127, min = -128)
 
@@ -218,7 +218,8 @@ static inline int8_t divi(int8_t s1, int8_t s2)
 // ##################### MEMORY | REGISTER DUMP ######################
 static void MEMDUMP()
 {
-    printf(RED "\n──────────────────────────────────────────Memory───────\n" RESET);
+    //printf(RED "\n──────────────────────────────────────────Memory───────\n" RESET);
+	printf("\n================================Memory==============\n");
 
     int i, j = 1;
     printf(WHITE "00\t%s\n" RESET, MEMORY[0]);
@@ -247,7 +248,8 @@ static void REGDUMP()
     char *bin_rtr = BIN(RTR);
     char *bin_rpc = BIN(RPC);
 
-    printf(BLUE "\n─────────────────────────────────────────Registers─────\n" RESET);
+    //printf(BLUE "\n─────────────────────────────────────────Registers─────\n" RESET);
+	printf("\n================================Registers==============\n");
     printf(BGRY "AX\t%s\t%02X\t%d\n" RESET, bin_rax, h(RAX), RAX);
     printf(WHITE "BX\t%s\t%02X\t%d\n" RESET, bin_rbx, h(RBX), RBX);
     printf(BGRY "CX\t%s\t%02X\t%d\n" RESET, bin_rcx, h(RCX), RCX);
@@ -558,7 +560,7 @@ static void run()
 {
     while (RPC < CODE_SEGMENT_END)
     {
-        printf("\e[1;1H\e[2J");
+        printf("\033c");
         MEMDUMP();
         ftdcex();
         REGDUMP();
