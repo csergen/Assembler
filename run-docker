@@ -1,0 +1,2 @@
+docker build --no-cache -t assembler-img .
+docker run -it --rm --name assembler assembler-img

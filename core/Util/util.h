@@ -1,5 +1,5 @@
-#ifndef _INIT_UTIL_H_
-#define _INIT_UTIL_H_
+#ifndef __CORE_UTIL_UTIL_H__
+#define __CORE_UTIL_UTIL_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,17 +13,14 @@ typedef struct
 {
       FILE *stream;
       char* path;
-      u_int32_t size;
+      int size;
       bool status;
       char* mode;
 } StreamObject;
 
 StreamObject *open_stream(char *_filepath, char *_mode);
-
 bool close_stream(StreamObject *_streamObject);
-
 bool write_stream(StreamObject *_streamObject, char *const text_);
-
 char *read_stream(StreamObject *_streamObject);
 
 #endif

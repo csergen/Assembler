@@ -13,7 +13,7 @@ StreamObject *open_stream(char *_filepath, char *_mode)
     temp_streamObject->path = _filepath;
     temp_streamObject->mode = _mode;
     temp_streamObject->stream = fopen(temp_streamObject->path,
-                                      temp_streamObject->mode);
+                                    temp_streamObject->mode);
     struct stat st;
     stat(temp_streamObject->path, &st);
     temp_streamObject->size = st.st_size;
@@ -21,13 +21,14 @@ StreamObject *open_stream(char *_filepath, char *_mode)
     if (!temp_streamObject->stream)
     {
         perror("File Does Not Exist");
-        exit(EXIT_FAILURE);
+        free(temp_streamObject);
+        return 0;
     }
 
     if (temp_streamObject->size == 0)
     {
         perror("File is empty");
-        exit(EXIT_FAILURE);
+        return 0;
     }
 
     temp_streamObject->status = true;
@@ -42,11 +43,26 @@ StreamObject *open_stream(char *_filepath, char *_mode)
  */
 bool close_stream(StreamObject *_streamObject)
 {
-    int status = false;
-    if (_streamObject->status)
+    int status = 1;
+
+    if (_streamObject == NULL)
+        fprintf(stdout, "Stream object is not exist");
+    else if (_streamObject->status)
     {
-        status = fclose(_streamObject->stream) ? false : true;
-        if (status) free(_streamObject);
+        status = fclose(_streamObject->stream) ? 1 : 0;
+        if (status == 0) 
+        { 
+            _streamObject->stream = NULL;
+            _streamObject->path = NULL;
+            _streamObject->size = 0;
+            _streamObject->status = NULL;
+            _streamObject->mode = NULL;
+
+            free(_streamObject->stream);
+            free(_streamObject->mode);
+            free(_streamObject);
+            //_streamObject = NULL;
+        }
     }
     else
         fprintf(stdout, "File is already closed");
@@ -65,7 +81,7 @@ char *read_stream(StreamObject *_streamObject)
         || _streamObject->size == 0)
         return NULL;
 
-    char *m_destination = malloc(sizeof(m_destination) * _streamObject->size);
+    char *m_destination = malloc(sizeof(char) * _streamObject->size);
     int m_line_counter = 0;
     char m_line;
 
