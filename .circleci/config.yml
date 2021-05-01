@@ -21,7 +21,7 @@ jobs:
             cd build
             cmake ..
             make
-            ./Assembler ../example/1.asm
+            ./Assembler ../example/1.source
 
 workflows:
   version: 1.0
