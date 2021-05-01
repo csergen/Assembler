@@ -19,7 +19,8 @@ char *argparse(int argc, char **argv)
     else
     {
         printf("Enter file path: ");
-        fscanf(stdin, "%s", _filepath);
+        scanf("%s", _filepath);
+        //fscanf(stdin, "%s", _filepath);
     }
 
     return _filepath;

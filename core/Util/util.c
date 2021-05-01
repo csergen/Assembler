@@ -22,13 +22,14 @@ StreamObject *open_stream(char *_filepath, char *_mode)
     {
         perror("File Does Not Exist");
         free(temp_streamObject);
-        return NULL;
+        return 0;
     }
 
     if (temp_streamObject->size == 0)
     {
         perror("File is empty");
-        return NULL;
+        free(temp_streamObject);
+        return 0;
     }
 
     temp_streamObject->status = true;
