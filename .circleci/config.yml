@@ -5,26 +5,13 @@ version: 2.1
 executors:
   exectr:
     docker:
-      - image: ubuntu:latest
+      - image: csergen/assembler
 
 jobs:
   build:
     executor: exectr
     steps:
       - checkout
-      - run:
-          command: |
-            apt-get update -y && apt-get install -y --no-install-recommends  \
-                                                  tzdata                     \
-                                                  gcc                        \
-                                                  g++                        \
-                                                  make                       \
-                                                  build-essential            \
-                                                  cmake &&                   \
-            apt-get autoclean  && \
-            apt-get autoremove && \
-            apt-get clean      && \
-            rm -rf /var/lib/apt/lists/*
       - run:
           command: mkdir -p build
 
