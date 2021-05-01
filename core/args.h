@@ -5,7 +5,7 @@
 
 char *argparse(int argc, char **argv)
 {
-    char *_filepath = malloc(sizeof(_filepath) * FILENAME_MAX);
+    char *_filepath = malloc(sizeof(char) * FILENAME_MAX);
 
     if (argc > 2)
     {
