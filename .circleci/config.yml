@@ -2,11 +2,28 @@
 version: 2.1
 # Use a package of configuration called an orb.
 
+executors:
+  exectr:
+    docker:
+      - image: ubuntu:latest
+
 jobs:
   build:
-    machine: true
+    executor: exectr
     steps:
       - checkout
+      - run:
+          command: |
+            apt-get update -y && apt-get install -y --no-install-recommends  \
+            gcc                         \
+            g++                         \
+            make                        \
+            build-essential             \
+            cmake   &&                  \
+            apt-get autoclean       &&                  \
+            apt-get autoremove      &&                  \
+            apt-get clean           &&                  \
+            rm -rf /var/lib/apt/lists/*
       - run:
           command: mkdir -p build
 
