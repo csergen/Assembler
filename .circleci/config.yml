@@ -3,9 +3,9 @@ version: 2.1
 # Use a package of configuration called an orb.
 
 jobs:
-  executor: machine
   build:
     steps:
+      machine: true
       - checkout
       - run:
           command: mkdir -p build
