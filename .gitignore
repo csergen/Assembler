@@ -31,7 +31,6 @@
 *.out
 *.app
 
-*.asm
 
 build/
 .vscode/
@@ -39,4 +38,3 @@ assembler
 run
 *.sh
 *.gdb_history
-*.hex

@@ -562,7 +562,7 @@ static void run()
         MEMDUMP();
         ftdcex();
         REGDUMP();
-        getc(stdin);
+        //getc(stdin);
     }
 }
 

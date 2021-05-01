@@ -1,0 +1,4 @@
+HRK AX, 10
+HRK BX, -14
+HRK CX, 24
+HRK DX, -2

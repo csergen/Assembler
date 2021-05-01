@@ -1,0 +1,8 @@
+HRK AX, RN
+HRK CX, AX
+
+FACT: CIK AX, 1
+      CRP CX, AX
+      SP FACT
+
+RN: 5
