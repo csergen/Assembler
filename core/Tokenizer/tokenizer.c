@@ -173,7 +173,7 @@ tokenize(char* source)
         }
     }
 
-    free(tok->word);
+    //free(tok->word);
     free(tok);
     TokenNode* end_token = new_token();
     end_token->type = ENDMARKER;
