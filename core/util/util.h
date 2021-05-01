@@ -1,5 +1,5 @@
-#ifndef _INIT_UTIL_H_
-#define _INIT_UTIL_H_
+#ifndef __CORE_UTIL_UTIL_H__
+#define __CORE_UTIL_UTIL_H__
 
 #include <stdio.h>
 #include <stdlib.h>

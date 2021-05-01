@@ -1,5 +1,5 @@
-#ifndef __INIT_NODE_H__
-#define __INIT_NODE_H__
+#ifndef __CORE_NODE_NODE_H__
+#define __CORE_NODE_NODE_H__
 
 typedef struct node
 {

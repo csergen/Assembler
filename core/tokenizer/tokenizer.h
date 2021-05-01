@@ -1,5 +1,5 @@
-#ifndef __INIT_TOKENIZER_H__
-#define __INIT_TOKENIZER_H__
+#ifndef __CORE_TOKENIZER_TOKENIZER_H__
+#define __CORE_TOKENIZER_TOKENIZER_H__
 
 #define NAN         0
 

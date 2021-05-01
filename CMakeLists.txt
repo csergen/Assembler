@@ -3,29 +3,29 @@ project(Assembler C)
 
 set(CMAKE_C_STANDARD 11)
 
-include_directories(init)
-include_directories(init/node)
-include_directories(init/parser)
-include_directories(init/tokenizer)
-include_directories(init/vm)
-include_directories(init/util)
-include_directories(init/assemble)
+include_directories(core)
+include_directories(core/node)
+include_directories(core/parser)
+include_directories(core/tokenizer)
+include_directories(core/vm)
+include_directories(core/util)
+include_directories(core/assemble)
 
 set (SRCS
-    assembler.c
-    init/args.h
-    init/util/util.h
-    init/util/util.c
-    init/tokenizer/tokenizer.h
-    init/tokenizer/tokenizer.c
-    init/parser/parser.h
-    init/parser/parser.c
-    init/node/node.h
-    init/node/node.c
-    init/vm/vm.h
-    init/vm/vm.c
-    init/assemble/assemble.h
-    init/assemble/assemble.c)
+    core/assembler.c
+    core/args.h
+    core/util/util.h
+    core/util/util.c
+    core/tokenizer/tokenizer.h
+    core/tokenizer/tokenizer.c
+    core/parser/parser.h
+    core/parser/parser.c
+    core/node/node.h
+    core/node/node.c
+    core/vm/vm.h
+    core/vm/vm.c
+    core/assemble/assemble.h
+    core/assemble/assemble.c)
 
 add_executable(Assembler ${SRCS})
 target_link_libraries(Assembler m)

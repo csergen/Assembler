@@ -1,5 +1,5 @@
-#ifndef __INIT_VM_H__
-#define __INIT_VM_H__
+#ifndef __CORE_VM_VM_H__
+#define __CORE_VM_VM_H__
 
 // OPCODES
 #define HRK 0x00
