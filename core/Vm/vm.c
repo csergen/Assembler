@@ -237,16 +237,36 @@ static void MEMDUMP()
 
 static void REGDUMP()
 {
+    char *bin_rax = BIN(RAX);
+    char *bin_rbx = BIN(RBX);
+    char *bin_rcx = BIN(RCX);
+    char *bin_rdx = BIN(RDX);
+    char *bin_rir = BIN(RIR);
+    char *bin_rar = BIN(RAR);
+    char *bin_rdr = BIN(RDR);
+    char *bin_rtr = BIN(RTR);
+    char *bin_rpc = BIN(RPC);
+
     printf(BLUE "\n─────────────────────────────────────────Registers─────\n" RESET);
-    printf(BGRY "AX\t%s\t%02X\t%d\n" RESET, BIN(RAX), h(RAX), RAX);
-    printf(WHITE "BX\t%s\t%02X\t%d\n" RESET, BIN(RBX), h(RBX), RBX);
-    printf(BGRY "CX\t%s\t%02X\t%d\n" RESET, BIN(RCX), h(RCX), RCX);
-    printf(WHITE "DX\t%s\t%02X\t%d\n\n" RESET, BIN(RDX), h(RDX), RDX);
-    printf(BGRY "IR\t%s\t%02X\t%d\n" RESET, BIN(RIR), h(RIR), RIR);
-    printf(WHITE "AR\t%s\t%02X\t%d\n" RESET, BIN(RAR), h(RAR), RAR);
-    printf(BGRY "DR\t%s\t%02X\t%d\n" RESET, BIN(RDR), h(RDR), RDR);
-    printf(WHITE "TR\t%s\t%02X\t%d\n\n" RESET, BIN(RTR), h(RTR), RTR);
-    printf(BGRY "PC\t%s\t%02X\t%d\n" RESET, BIN(RPC), h(RPC), RPC);
+    printf(BGRY "AX\t%s\t%02X\t%d\n" RESET, bin_rax, h(RAX), RAX);
+    printf(WHITE "BX\t%s\t%02X\t%d\n" RESET, bin_rbx, h(RBX), RBX);
+    printf(BGRY "CX\t%s\t%02X\t%d\n" RESET, bin_rcx, h(RCX), RCX);
+    printf(WHITE "DX\t%s\t%02X\t%d\n\n" RESET, bin_rdx, h(RDX), RDX);
+    printf(BGRY "IR\t%s\t%02X\t%d\n" RESET, bin_rir, h(RIR), RIR);
+    printf(WHITE "AR\t%s\t%02X\t%d\n" RESET, bin_rar, h(RAR), RAR);
+    printf(BGRY "DR\t%s\t%02X\t%d\n" RESET, bin_rdr, h(RDR), RDR);
+    printf(WHITE "TR\t%s\t%02X\t%d\n\n" RESET, bin_rtr, h(RTR), RTR);
+    printf(BGRY "PC\t%s\t%02X\t%d\n" RESET, bin_rpc, h(RPC), RPC);
+
+    free(bin_rax);
+    free(bin_rbx);
+    free(bin_rcx);
+    free(bin_rdx);
+    free(bin_rir);
+    free(bin_rar);
+    free(bin_rdr);
+    free(bin_rtr);
+    free(bin_rpc);
 }
 
 // #################### FETCH & DECODE & EXECUTE ###################
@@ -483,7 +503,9 @@ static void ftdcex()
             }
             break;
         case MM:
-            strcpy(MEMORY[RAR], BIN(not(RDR)));
+            char *bin_rdr = BIN(not(RDR));
+            strcpy(MEMORY[RAR], bin_rdr);
+            free(bin_rdr);
             break;
         case MI:
             RDR = not(RDR);
