@@ -22,7 +22,6 @@ jobs:
             cd build
             cmake ..
             make
-            ./Assembler ../factorial.output
 
 workflows:
   version: 1.0

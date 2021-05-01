@@ -16,4 +16,4 @@ RUN mkdir "mkdir /usr/src/assembler/build"
 WORKDIR /usr/src/assembler/build
 RUN cmake ..
 RUN make
-CMD ["./Assembler", "../example/1.source"]
+CMD ["./Assembler", "../example/1.asm"]
