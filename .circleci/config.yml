@@ -18,11 +18,10 @@ jobs:
       - run:
           name: Build
           command: |
-            ls -la
             cd build
             cmake ..
             make
-            ./Assembler ../example/1.source
+            ls -la
 
 workflows:
   version: 1.0

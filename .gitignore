@@ -37,5 +37,6 @@ build/
 .vscode/
 assembler
 run
+run-docker
 *.sh
 *.gdb_history
