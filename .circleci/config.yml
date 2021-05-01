@@ -3,10 +3,17 @@ version: 2.1
 # Use a package of configuration called an orb.
 jobs:
   build:
-    machine: true
+    docker:
+      - image: csergen/assembler
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
+
+      - setup_remote_docker:
+          docker_layer_caching: true
+
       - run: |
-          docker run -it --rm --name assembler assembler-img
-      
-      - run: docker build --no-cache -t assembler-img .
+        docker build -t csergen/assembler:0.1 .
+        docker run --name assembler csergen/assembler-img:0.1
