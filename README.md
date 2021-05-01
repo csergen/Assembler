@@ -1,4 +1,4 @@
 # Assembler
 
 ## Machine
-![machine](docs/img/final.png)
+![machine](docs/img/final.jpg)
