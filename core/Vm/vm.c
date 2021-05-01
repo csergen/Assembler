@@ -345,6 +345,7 @@ static void ftdcex()
     }
 
     /*********** EXECUTE ***********/
+    char *bin_rdr;
     switch (opcode)
     {
     case HRK:
@@ -503,7 +504,7 @@ static void ftdcex()
             }
             break;
         case MM:
-            char *bin_rdr = BIN(not(RDR));
+            bin_rdr = BIN(not(RDR));
             strcpy(MEMORY[RAR], bin_rdr);
             free(bin_rdr);
             break;

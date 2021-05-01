@@ -9,7 +9,6 @@ README.md
 *.mp4
 resources/
 docs/
-example/
 *.md
 run
 build/
