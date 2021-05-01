@@ -28,7 +28,6 @@ StreamObject *open_stream(char *_filepath, char *_mode)
     if (temp_streamObject->size == 0)
     {
         perror("File is empty");
-        free(temp_streamObject);
         return NULL;
     }
 
