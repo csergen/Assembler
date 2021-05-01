@@ -2,14 +2,8 @@
 version: 2.1
 # Use a package of configuration called an orb.
 
-executors:
-  exectr:
-    docker:
-      - image: csergen/assembler:latest
-
 jobs:
   build:
-    executor: exectr
     steps:
       - checkout
       - run:
