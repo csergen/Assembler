@@ -21,12 +21,14 @@ StreamObject *open_stream(char *_filepath, char *_mode)
     if (!temp_streamObject->stream)
     {
         perror("File Does Not Exist");
+        free(temp_streamObject);
         return NULL;
     }
 
     if (temp_streamObject->size == 0)
     {
         perror("File is empty");
+        free(temp_streamObject);
         return NULL;
     }
 
@@ -60,7 +62,7 @@ bool close_stream(StreamObject *_streamObject)
             free(_streamObject->stream);
             free(_streamObject->mode);
             free(_streamObject);
-            _streamObject = NULL;
+            //_streamObject = NULL;
         }
     }
     else
@@ -80,7 +82,7 @@ char *read_stream(StreamObject *_streamObject)
         || _streamObject->size == 0)
         return NULL;
 
-    char *m_destination = malloc(sizeof(m_destination) * _streamObject->size);
+    char *m_destination = malloc(sizeof(char) * _streamObject->size);
     int m_line_counter = 0;
     char m_line;
 
