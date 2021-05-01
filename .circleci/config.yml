@@ -4,8 +4,8 @@ version: 2.1
 
 jobs:
   build:
+    machine: true
     steps:
-      machine: true
       - checkout
       - run:
           command: mkdir -p build
