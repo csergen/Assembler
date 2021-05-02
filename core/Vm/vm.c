@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <math.h>
 
 #include "util.h"
 #include "vm.h"
@@ -11,7 +10,7 @@
 #define GRN   "\e[1;92m"
 #define WHITE "\e[1;97m"
 #define BLUE  "\e[1;94m"
-#define BGRY  "\x1b[40m"
+#define BGRY  "\x1b[31m"
 #define BRED  "\x1b[40m"
 #define BGRN  "\x1b[42m"
 #define RESET "\e[0m"
@@ -23,11 +22,11 @@ static int8_t RAX = 0x00;
 static int8_t RBX = 0x00;
 static int8_t RCX = 0x00;
 static int8_t RDX = 0x00;
-static int8_t RIR = 0x00;
-static int8_t RAR = 0x00;
-static int8_t RDR = 0x00;
+static u_int8_t RIR = 0x00;
+static u_int8_t RAR = 0x00;
+static u_int8_t RDR = 0x00;
 static int8_t RTR = 0x00;
-static int8_t RPC = 0x01;
+static u_int8_t RPC = 0x01;
 
 // MEMORY
 static char MEMORY[MEMORY_SIZE][INSTRUCTION_SIZE + 1];
@@ -562,13 +561,13 @@ static void run()
         MEMDUMP();
         ftdcex();
         REGDUMP();
-        //getc(stdin);
+        getc(stdin);
     }
 }
 
-void load_program(char *src_file)
+void load_program(char *executable)
 {
-    StreamObject *streamObject = open_stream(src_file, "r");
+    StreamObject *streamObject = open_stream(executable, "r");
     char buffer[3];
     int8_t hex;
     char *temp;

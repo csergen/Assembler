@@ -26,10 +26,7 @@ StreamObject *open_stream(char *_filepath, char *_mode)
     }
 
     if (temp_streamObject->size == 0)
-    {
         perror("File is empty");
-        return 0;
-    }
 
     temp_streamObject->status = true;
     return temp_streamObject;
@@ -72,7 +69,7 @@ bool close_stream(StreamObject *_streamObject)
 
 bool write_stream(StreamObject *_streamObject, char *const text_)
 {
-    return true;
+    fprintf(_streamObject->stream, "%s", text_);
 }
 
 char *read_stream(StreamObject *_streamObject)

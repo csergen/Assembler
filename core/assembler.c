@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     TokenNode *tk_iter = tk;
 
     //parse(tk_iter);
-    assemble(tk_iter);
+    char* executable_file = assemble(tk_iter);
     while (tk)
     {
         if (tk->type == NEWLINE)
@@ -36,9 +36,9 @@ int main(int argc, char **argv)
     }
 
     
-    //load_program("../out2.hex");
-    load_program("../output/factorial.hex");
-    free(tk_iter);
+    //load_program(executable_file);
+    //load_program("../output/out2.hex");
+    //load_program("../output/factorial.hex");
     free(tk);
     free(m_file_path);
     free(f_source);

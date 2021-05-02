@@ -358,13 +358,12 @@ static const int8_t
         },
 };
 
-
 struct address_symbol
 {
-  char *symbol;
-  int8_t address;
+    char *symbol;
+    int8_t address;
 };
 
-void assemble(TokenNode *);
+char *assemble(TokenNode *);
 
 #endif // INIT_ASSEMBLE_ASSEMBLE_H
