@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     TokenNode *tk_iter = tk;
 
     //parse(tk_iter);
-    char* executable_file = assemble(tk_iter);
+    //char* executable_file = assemble(tk_iter);
     while (tk)
     {
         if (tk->type == NEWLINE)

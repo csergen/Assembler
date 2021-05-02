@@ -44,7 +44,11 @@ static unsigned int CODE_SEGMENT_END = 0xc8;
 static unsigned int DATA_SEGMENT_BEGIN = 0xc9;
 static unsigned int DATA_SEGMENT_END = 0xff;
 
+// mask
+#define h(hex) hex & 0xFF
 
+char* BIN(const int8_t);
+int8_t HEX(const char*);
 void load_program(char *);
 
 #endif

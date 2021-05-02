@@ -6,6 +6,8 @@
 #include "tokenizer.h"
 #include "vm.h"
 
+#include "assemble.h"
+
 char *assemble(TokenNode *tk)
 {
   TokenNode *ftk = tk;
@@ -26,6 +28,25 @@ char *assemble(TokenNode *tk)
     {
       if (ftk->type == LABEL)
       {
+        if (ftk->next->type != COLON) {
+          perror("this is not label");
+          exit(EXIT_FAILURE);
+        } 
+
+        ftk = ftk->next->next; // immediate, \n
+
+
+        // variable definition
+        if (ftk->type == NUMBER || ftk->type == CONSTANT)
+        {
+
+        }
+        // label definition
+        else if (ftk->type == NEWLINE)
+        {
+
+        }
+
       }
       else if (ftk->type == OPCODE)
       {
@@ -93,11 +114,29 @@ char *assemble(TokenNode *tk)
             strcat(inst, "00"); // this is branch mode
         }
 
-        printf("%s\n", inst);
-        ftk = ftk->next;
+
+        char op[4] = {inst[0], inst[1], inst[2], inst[3]};
+        int8_t i = strtol(op, NULL, 2);
+        int8_t hex_inst = strtol(inst, NULL, 2);
+        bool st = false;
+
+        for (int c = 0; c < INSTRUCTION_OFFSET; c++)
+        {
+          if (reserved_instruction_table[i][c] == hex_inst) {
+            st = true;
+            break;
+          }
+        }
+
+        if (!st) {
+          perror("something went wrong");
+          exit(EXIT_FAILURE);
+        }
+
+        printf("%02X\n", strtol(inst, NULL, 2));
+
       }
     }
-    ftk = ftk->next;
   }
 
   close_stream(streamObject);

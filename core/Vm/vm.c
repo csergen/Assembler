@@ -31,12 +31,10 @@ static u_int8_t RPC = 0x01;
 // MEMORY
 static char MEMORY[MEMORY_SIZE][INSTRUCTION_SIZE + 1];
 
-// ########################### UTILS ###############################
-// mask
-#define h(hex) hex & 0xFF
+// ########################### GENERAL UTILS ###############################
 
 // hex to bin
-static char *BIN(const int8_t hex)
+char *BIN(const int8_t hex)
 {
     char *binary = (char *)malloc(9);
     char *hex_buffer = malloc(3);
@@ -174,11 +172,13 @@ static char *BIN(const int8_t hex)
 }
 
 // bin to hex
-static inline int8_t HEX(const char *binary)
+int8_t HEX(const char *binary)
 {
     return h(strtol(binary, NULL, 2));
 }
 
+
+// ########################### OPCODES #############################
 static int8_t not(int8_t d1)
 {
     char *buffer = malloc(sizeof(8));
