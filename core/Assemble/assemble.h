@@ -358,9 +358,10 @@ static const int8_t
         },
 };
 
-struct address_symbol
+struct adsym
 {
     char *symbol;
+    int8_t data;
     int8_t address;
 };
 

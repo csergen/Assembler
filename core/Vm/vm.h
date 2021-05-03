@@ -38,11 +38,11 @@
 #define INSTRUCTION_SIZE 0x8
 
 // MEMORY OFFSETS
-static unsigned int CODE_SEGMENT_BEGIN = 0x01;
-static unsigned int CODE_SEGMENT_END = 0xc8;
+static uint8_t CODE_SEGMENT_BEGIN = 0x01;
+static uint8_t CODE_SEGMENT_END = 0xc8;
 
-static unsigned int DATA_SEGMENT_BEGIN = 0xc9;
-static unsigned int DATA_SEGMENT_END = 0xff;
+static uint8_t DATA_SEGMENT_BEGIN = 0xc9;
+static uint8_t DATA_SEGMENT_END = 0xff;
 
 // mask
 #define h(hex) hex & 0xFF

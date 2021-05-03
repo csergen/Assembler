@@ -25,8 +25,8 @@ int main(int argc, char **argv)
     TokenNode *tk_iter = tk;
 
     //parse(tk_iter);
-    //char* executable_file = assemble(tk_iter);
-    while (tk)
+    char* executable_file = assemble(tk_iter);
+    /*while (tk)
     {
         if (tk->type == NEWLINE)
             printf("\\n\t(%d)\n", tk->type);
@@ -34,6 +34,7 @@ int main(int argc, char **argv)
             printf("%s\t(%d)\n", tk->word, tk->type);
         tk = tk->next;
     }
+    */
 
     
     //load_program(executable_file);
