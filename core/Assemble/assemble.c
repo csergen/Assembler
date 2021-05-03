@@ -8,7 +8,6 @@
 
 #include "assemble.h"
 
-
 static bool in_table(struct adsym *table[255], uint8_t size, char *ch)
 {
     for (int i = 0; i < size; i++)
@@ -20,7 +19,18 @@ static bool in_table(struct adsym *table[255], uint8_t size, char *ch)
     return false;
 }
 
-static void add_table(struct adsym* table[255], uint8_t* offset, struct adsym* buffer)
+static struct adsym *get_from_table(struct adsym *table[255], uint8_t size, char *ch)
+{
+    for (int i = 0; i < size; i++)
+    {
+        if (strcmp(table[i]->symbol, ch) == 0)
+            return table[i];
+    }
+
+    return NULL;
+}
+
+static void add_table(struct adsym *table[255], uint8_t *offset, struct adsym *buffer)
 {
     if (*offset < 256)
     {
@@ -32,20 +42,22 @@ static void add_table(struct adsym* table[255], uint8_t* offset, struct adsym* b
 char *assemble(TokenNode *tk)
 {
     TokenNode *ftk = tk;
-    TokenNode *stk = tk;
+    TokenNode *fftk = ftk;
 
     uint8_t lc = DATA_SEGMENT_BEGIN;
     uint8_t pc = CODE_SEGMENT_BEGIN;
 
+    uint8_t data_offset = 0;
+
     char *output_hex = "output.hex";
 
-    //StreamObject *streamObject_outputhex = open_stream(output_hex, "w");
+    StreamObject *sobj = open_stream(output_hex, "w");
 
     struct adsym *address_symbol_table[255];
 
     uint8_t c = 0;
 
-    // FIRST PASS for VARIABLE, VARIABLE CALL, LABEL, LABEL CALL DEFINITION
+    // ##################### FIRST PASS #######################
     while (ftk)
     {
         struct adsym *a1 = malloc(sizeof(a1));
@@ -70,11 +82,12 @@ char *assemble(TokenNode *tk)
                     // M[DATA_SEGMENT_BEGIN]
                     a1->address = lc;
                     lc++;
+                    data_offset++;
 
                     add_table(address_symbol_table, &c, a1);
-                } 
+                }
                 // variable repetition
-                else 
+                else
                 {
                     printf("Error: %s is repeated\n", ftk->word);
                     exit(EXIT_FAILURE);
@@ -116,30 +129,161 @@ char *assemble(TokenNode *tk)
         {
             free(a1);
 
-            // encode Instruction
             while (ftk->next && ftk->type != NEWLINE)
             {
-                printf("%s\t%d\n", ftk->word, pc);
+                //printf("%s\t%d\n", ftk->word, pc);
                 ftk = ftk->next;
+
+                if (ftk->type == LABEL)
+                {
+                    struct adsym *tmp = get_from_table(address_symbol_table, c, ftk->word);
+
+                    if (tmp)
+                    {
+                        memset(ftk->word, 0, sizeof(char) * 2);
+                        sprintf(ftk->word, "%02X", h(tmp->address));
+                        ftk->type = CONSTANT;
+                    }
+                }
 
                 // one memory block has 8 bit therefore pc 2 increased.
                 if (ftk->type == NEWLINE)
-                    pc+=2;
-
-
+                    pc += 2;
             }
         }
 
         ftk = ftk->next;
     }
 
-    printf("====\n");
+    printf("========ADDRESS SYMBOL TABLE==========\n");
     for (int i = 0; i < c; i++)
     {
-        printf("%s\t%d\t%02X\n", address_symbol_table[i]->symbol, address_symbol_table[i]->data, h(address_symbol_table[i]->address));
+        printf("%s\t%d\t%02X\n",
+               address_symbol_table[i]->symbol, address_symbol_table[i]->data, h(address_symbol_table[i]->address));
+    }
+    printf("======================================\n");
+
+    // ################## SECOND PASS ##################
+    ftk = fftk;
+    while (ftk)
+    {
+        if (ftk->type == LABEL)
+        {
+            if (ftk->next->type == NEWLINE)
+            {
+                struct adsym *tmp = get_from_table(address_symbol_table, c, ftk->word);
+
+                if (tmp)
+                {
+                    memset(ftk->word, 0, sizeof(char) * 2);
+                    sprintf(ftk->word, "%02X", h(tmp->address));
+                    ftk->type = CONSTANT;
+                }
+                else
+                {
+                    printf("%s is not in the table.", ftk->word);
+                    exit(EXIT_FAILURE);
+                }
+            }
+        }
+        ftk = ftk->next;
     }
 
-    char *inst = malloc(sizeof(char) * 9);
+    // DATA SEGMENT
+    for (uint8_t i = 0; i < data_offset; i++)
+    {
+        char ch[2];
+        sprintf(ch, "%02X", h(address_symbol_table[i]->address));
+        write_stream(sobj, ch);
+        sprintf(ch, "%02X", h(address_symbol_table[i]->data));
+        write_stream(sobj, ch);
+        write_stream(sobj, "\n");
+    }
+
+    write_stream(sobj, "$\n");
+
+    // CODE SEGMENT
+    ftk = fftk;
+    while (ftk)
+    {
+        if (ftk->type == LABEL)
+        {
+            if (ftk->next->type == COLON)
+            {
+                while (ftk->type != NEWLINE)
+                    ftk = ftk->next;
+            }
+        }
+        else
+        {
+            char *inst = malloc(12);
+
+            if (ftk->type != NEWLINE)
+            {
+                if (ftk->type == OPCODE)
+                {
+                    if (strcmp(ftk->word, "HRK") == 0)
+                        strcpy(inst, "0000");
+                    else if (strcmp(ftk->word, "TOP") == 0)
+                        strcpy(inst, "0001");
+                    else if (strcmp(ftk->word, "CRP") == 0)
+                        strcpy(inst, "0010");
+                    else if (strcmp(ftk->word, "CIK") == 0)
+                        strcpy(inst, "0011");
+                    else if (strcmp(ftk->word, "BOL") == 0)
+                        strcpy(inst, "0100");
+                    else if (strcmp(ftk->word, "VE") == 0)
+                        strcpy(inst, "0101");
+                    else if (strcmp(ftk->word, "VEYA") == 0)
+                        strcpy(inst, "0110");
+                    else if (strcmp(ftk->word, "DEG") == 0)
+                        strcpy(inst, "0111");
+                    else if (strcmp(ftk->word, "SS") == 0)
+                        strcpy(inst, "1000");
+                    else if (strcmp(ftk->word, "SSD") == 0)
+                        strcpy(inst, "1001");
+                    else if (strcmp(ftk->word, "SN") == 0)
+                        strcpy(inst, "1010");
+                    else if (strcmp(ftk->word, "SP") == 0)
+                        strcpy(inst, "1011");
+                    else
+                        exit(EXIT_FAILURE);
+                    ftk = ftk->next;
+                }
+
+                if (ftk->type == REGISTER)
+                {
+                    if (strcmp(ftk->word, "AX") == 0)
+                        strcat(inst, "00");
+                    else if (strcmp(ftk->word, "BX") == 0)
+                        strcat(inst, "01");
+                    else if (strcmp(ftk->word, "CX") == 0)
+                        strcat(inst, "10");
+                    else if (strcmp(ftk->word, "DX") == 0)
+                        strcat(inst, "11");
+
+                    ftk = ftk->next->next;
+
+                    if (ftk->type == NUMBER || ftk->type == CONSTANT)
+                        strcat(inst, "11");
+                    else if (ftk->type == REGISTER)
+                        strcat(inst, "01");
+                    else if (ftk->type == LSQB)
+                        strcat(inst, "10");
+
+                    ftk = ftk->next;
+
+                    if (ftk->type == LSQB)
+                        ftk = ftk->next;
+                }
+                else if (ftk->type == CONSTANT)
+                {
+                    printf("CONSTANT: %s\n", ftk->word);
+                }
+            }
+        }
+        ftk = ftk->next;
+    }
 
     return output_hex;
 }
