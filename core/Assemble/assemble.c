@@ -41,6 +41,157 @@ static void add_table(struct adsym *table[255], uint8_t *offset, struct adsym *b
     }
 }
 
+static void _3block(TokenNode **tk, char *ins, char *addr)
+{
+    while ((*tk)->type != NEWLINE && (*tk)->type != ENDMARKER)
+    {
+        if (strcmp((*tk)->word, "HRK") == 0)
+            strcpy(ins, "0000");
+        else if (strcmp((*tk)->word, "TOP") == 0)
+            strcpy(ins, "0001");
+        else if (strcmp((*tk)->word, "CRP") == 0)
+            strcpy(ins, "0010");
+        else if (strcmp((*tk)->word, "CIK") == 0)
+            strcpy(ins, "0011");
+        else if (strcmp((*tk)->word, "BOL") == 0)
+            strcpy(ins, "0100");
+        else if (strcmp((*tk)->word, "VE") == 0)
+            strcpy(ins, "0101");
+        else if (strcmp((*tk)->word, "VEYA") == 0)
+            strcpy(ins, "0110");
+        else
+            exit(EXIT_FAILURE);
+
+        *tk = (*tk)->next;
+
+        if (strcmp((*tk)->word, "AX") == 0)
+            strcat(ins, "00");
+        else if (strcmp((*tk)->word, "BX") == 0)
+            strcat(ins, "01");
+        else if (strcmp((*tk)->word, "CX") == 0)
+            strcat(ins, "10");
+        else if (strcmp((*tk)->word, "DX") == 0)
+            strcat(ins, "11");
+
+        *tk = (*tk)->next->next;
+
+        if ((*tk)->type == LSQB)
+        {
+            *tk = (*tk)->next;
+            strcat(ins, "10");
+            uint8_t tmp = strtol((*tk)->word, NULL, 16);
+            char *bin_tmp = BIN(tmp);
+            strcpy(addr, bin_tmp);
+            free(bin_tmp);
+            *tk = (*tk)->next->next;
+        }
+        else if ((*tk)->type == REGISTER)
+        {
+            strcat(ins, "01");
+            uint8_t tmp;
+            if (strcmp((*tk)->word, "AX") == 0)
+                tmp = 0x00;
+            if (strcmp((*tk)->word, "BX") == 0)
+                tmp = 0x01;
+            if (strcmp((*tk)->word, "CX") == 0)
+                tmp = 0x02;
+            if (strcmp((*tk)->word, "DX") == 0)
+                tmp = 0x03;
+
+            char *bin_tmp = BIN(tmp);
+            strcpy(addr, bin_tmp);
+            free(bin_tmp);
+            *tk = (*tk)->next;
+        }
+
+        else if ((*tk)->type == NUMBER || (*tk)->type == CONSTANT)
+        {
+            strcat(ins, "11");
+
+            uint8_t tmp = strtol((*tk)->word, NULL, 10);
+            char *bin_tmp = BIN(tmp);
+            strcpy(addr, bin_tmp);
+            free(bin_tmp);
+            *tk = (*tk)->next;
+        }
+    }
+}
+
+static void deg(TokenNode **tk, char *ins, char *addr)
+{
+    strcpy(ins, "0111");
+    strcat(ins, "00");
+
+    *tk = (*tk)->next;
+
+    while ((*tk)->type != NEWLINE && (*tk)->type != ENDMARKER)
+    {
+        if ((*tk)->type == LSQB)
+        {
+            strcat(ins, "10");
+            *tk = (*tk)->next;
+            uint8_t tmp = strtol((*tk)->word, NULL, 16);
+            char *bin_tmp = BIN(tmp);
+            strcpy(addr, bin_tmp);
+            free(bin_tmp);
+            *tk = (*tk)->next->next;
+        }
+        else if ((*tk)->type == REGISTER)
+        {
+            strcat(ins, "01");
+            uint8_t tmp;
+            if (strcmp((*tk)->word, "AX") == 0)
+                tmp = 0x00;
+            if (strcmp((*tk)->word, "BX") == 0)
+                tmp = 0x01;
+            if (strcmp((*tk)->word, "CX") == 0)
+                tmp = 0x02;
+            if (strcmp((*tk)->word, "DX") == 0)
+                tmp = 0x03;
+
+            char *bin_tmp = BIN(tmp);
+            strcpy(addr, bin_tmp);
+            free(bin_tmp);
+            *tk = (*tk)->next;
+        }
+        else if ((*tk)->type == NUMBER || (*tk)->type == CONSTANT)
+        {
+            strcat(ins, "11");
+            uint8_t tmp = strtol((*tk)->word, NULL, 10);
+            char *bin_tmp = BIN(tmp);
+            strcpy(addr, bin_tmp);
+            free(bin_tmp);
+            *tk = (*tk)->next;
+        }
+    }
+}
+
+static void branch(TokenNode **tk, char *ins, char *addr)
+{
+
+    if (strcmp((*tk)->word, "SS") == 0)
+        strcpy(ins, "1000");
+    else if (strcmp((*tk)->word, "SSD") == 0)
+        strcpy(ins, "1001");
+    else if (strcmp((*tk)->word, "SN") == 0)
+        strcpy(ins, "1010");
+    else if (strcmp((*tk)->word, "SP") == 0)
+        strcpy(ins, "1011");
+
+    strcat(ins, "0000");
+
+    *tk = (*tk)->next;
+
+    if ((*tk)->type == ADDRESS)
+    {
+        uint8_t tmp = strtol((*tk)->word, NULL, 16);
+        char *bin_tmp = BIN(tmp);
+        strcpy(addr, bin_tmp);
+        free(bin_tmp);
+        *tk = (*tk)->next;
+    }
+}
+
 char *assemble(TokenNode *tk)
 {
     TokenNode *ftk = tk;
@@ -109,7 +260,7 @@ char *assemble(TokenNode *tk)
                 ftk = ftk->next->next;
             }
             // label definition ( ex: LOP: )
-            else if (ftk->next->type == COLON && ftk->next->next->type == NEWLINE)
+            else if (ftk->next->type == COLON && (ftk->next->next->type == NEWLINE || ftk->next->next->type == ENDMARKER))
             {
                 // search 'LABEL' in address-symbol table
                 if (!in_table(address_symbol_table, c, ftk->word))
@@ -160,8 +311,7 @@ char *assemble(TokenNode *tk)
     printf("========ADDRESS SYMBOL TABLE==========\n");
     for (int i = 0; i < c; i++)
     {
-        printf("%s\t%d\t%02X\n",
-               address_symbol_table[i]->symbol, address_symbol_table[i]->data, h(address_symbol_table[i]->address));
+        printf("%s\t%d\t%02X\n", address_symbol_table[i]->symbol, address_symbol_table[i]->data, h(address_symbol_table[i]->address));
     }
     printf("======================================\n");
 
@@ -206,135 +356,91 @@ char *assemble(TokenNode *tk)
 
     // CODE SEGMENT
     ftk = fftk;
+    char *ins = malloc(9*sizeof(char));
+    char *addr = malloc(9*sizeof(char));
+
     while (ftk)
     {
         if (ftk->type == LABEL)
         {
             if (ftk->next->type == COLON)
             {
-                while (ftk->type != NEWLINE)
+                while (ftk->type != NEWLINE && ftk->type != ENDMARKER)
                     ftk = ftk->next;
             }
         }
         else
         {
-            char *inst = malloc(8);
-            char *dt = malloc(9);
-
-            if (ftk->type != NEWLINE && ftk->type != ENDMARKER)
+            while (ftk->type != NEWLINE && ftk->type != ENDMARKER)
             {
                 if (ftk->type == OPCODE)
                 {
-                    if (strcmp(ftk->word, "HRK") == 0)
-                        strcpy(inst, "0000");
-                    else if (strcmp(ftk->word, "TOP") == 0)
-                        strcpy(inst, "0001");
-                    else if (strcmp(ftk->word, "CRP") == 0)
-                        strcpy(inst, "0010");
-                    else if (strcmp(ftk->word, "CIK") == 0)
-                        strcpy(inst, "0011");
-                    else if (strcmp(ftk->word, "BOL") == 0)
-                        strcpy(inst, "0100");
-                    else if (strcmp(ftk->word, "VE") == 0)
-                        strcpy(inst, "0101");
-                    else if (strcmp(ftk->word, "VEYA") == 0)
-                        strcpy(inst, "0110");
-                    else if (strcmp(ftk->word, "DEG") == 0)
-                        strcpy(inst, "0111");
-                    else if (strcmp(ftk->word, "SS") == 0)
-                        strcpy(inst, "1000");
-                    else if (strcmp(ftk->word, "SSD") == 0)
-                        strcpy(inst, "1001");
-                    else if (strcmp(ftk->word, "SN") == 0)
-                        strcpy(inst, "1010");
-                    else if (strcmp(ftk->word, "SP") == 0)
-                        strcpy(inst, "1011");
+                    if (strcmp(ftk->word, "DEG") == 0)
+                        deg(&ftk, ins, addr);
+                    else if (strcmp(ftk->word, "SS") == 0 || strcmp(ftk->word, "SSD") == 0 || strcmp(ftk->word, "SN") == 0 || strcmp(ftk->word, "SP") == 0)
+                        branch(&ftk, ins, addr);
                     else
+                        _3block(&ftk, ins, addr);
+                }
+
+                if (ftk->type == NEWLINE || ftk->type == ENDMARKER)
+                {
+                    char ch[2];
+                    uint8_t tmp1 = h(HEX(ins));
+                    sprintf(ch, "%02X", tmp1);
+
+                    uint8_t tmp2 = h(HEX(addr));
+
+                    int i = ch[0];
+                    switch (i)
+                    {
+                    case 'A':
+                    case 'a':
+                        i = 10;
+                        break;
+                    case 'B':
+                    case 'b':
+                        i = 11;
+                        break;
+                    default:
+                        i -= '0';
+                        break;
+                    }
+                    bool b = 0;
+
+                    //printf("%s %s\t%02X %02X\n", ins, addr, tmp1, tmp2);
+                    for (int j = 0; j < INSTRUCTION_OFFSET; j++)
+                    {
+                        uint8_t t = h(reserved_instruction_table[i][j]);
+                        if (t == h(tmp1))
+                            b = 1;
+                    }
+
+                    if (b == 0)
+                    {
+                        printf("error: not in the reserved table");
                         exit(EXIT_FAILURE);
-                    ftk = ftk->next;
-                }
-
-
-                if (ftk->type == REGISTER)
-                {
-                    if (strcmp(ftk->word, "AX") == 0)
-                        strcat(inst, "00");
-                    if (strcmp(ftk->word, "BX") == 0)
-                        strcat(inst, "01");
-                    if (strcmp(ftk->word, "CX") == 0)
-                        strcat(inst, "10");
-                    if (strcmp(ftk->word, "DX") == 0)
-                        strcat(inst, "11");
-
-
-                    ftk = ftk->next->next;
-
-                    if (ftk->type == LSQB)
-                    {
-                        strcat(inst, "10");
-                        ftk = ftk->next;
-                        uint8_t tmp = strtol(ftk->word, NULL, 16);
-                        char *bin_tmp = BIN(tmp);
-                        strcpy(dt, bin_tmp);
-                        free(bin_tmp);
-                        ftk = ftk->next->next;
                     }
-                    else if (ftk->type == NUMBER || ftk->type == CONSTANT)
-                    {
-                        strcat(inst, "11");
-                        uint8_t tmp = strtol(ftk->word, NULL, 16);
-                        char *bin_tmp = BIN(tmp);
-                        strcpy(dt, bin_tmp);
-                        free(bin_tmp);
-                        ftk = ftk->next;
-                    }
-                    else if (ftk->type == REGISTER)
-                    {
-                        strcat(inst, "01");
-                        uint8_t tmp;
-                        if (strcmp(ftk->word, "AX") == 0)
-                            tmp = 0x00;
-                        if (strcmp(ftk->word, "BX") == 0)
-                            tmp = 0x01;
-                        if (strcmp(ftk->word, "CX") == 0)
-                            tmp = 0x02;
-                        if (strcmp(ftk->word, "DX") == 0)
-                            tmp = 0x03;
 
-                        char *bin_tmp = BIN(tmp);
-                        strcpy(dt, bin_tmp);
-                        free(bin_tmp);
-                        ftk = ftk->next;
-                    }
-                }
-                else if (ftk->type == ADDRESS)
-                {
-                    strcat(inst, "00");
-                    strcat(inst, "00");
-                    uint8_t tmp = strtol(ftk->word, NULL, 16);
-                    char *bin_tmp = BIN(tmp);
-                    strcpy(dt, bin_tmp);
-                    free(bin_tmp);
-                }
+                    char w1[2];
+                    sprintf(w1, "%02X", tmp1);
+                    write_stream(sobj, w1);
 
-                uint8_t tmp1 = h(HEX(inst));
-                uint8_t tmp2 = h(HEX(dt));
+                    sprintf(w1, "%02X", tmp2);
+                    write_stream(sobj, w1);
 
-                char w1[2];
-                sprintf(w1, "%02X", tmp1);
-                write_stream(sobj, w1);
-
-                sprintf(w1, "%02X", tmp2);
-                write_stream(sobj, w1);
-
-                write_stream(sobj, "\n");
-                free(inst);
-                free(dt);
+                    write_stream(sobj, "\n");
+                    memset(ins, 0, sizeof(ins));
+                    memset(addr, 0, sizeof(addr));
+                } 
             }
         }
 
         ftk = ftk->next;
     }
+
+    free(ins);
+    free(addr);
     close_stream(sobj);
     return output_hex;
 }

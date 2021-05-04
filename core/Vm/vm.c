@@ -180,17 +180,7 @@ int8_t HEX(const char *binary)
 // ########################### OPCODES #############################
 static int8_t not(int8_t d1)
 {
-    char *buffer = malloc(sizeof(8));
-    char *dr = BIN(RDR);
-
-    for (int i = 7; i >= 0; i--)
-        buffer[i] = dr[i] == '1' ? '0' : '1';
-
-    int8_t res = HEX(buffer);
-    free(buffer);
-    free(dr);
-
-    return res;
+    return h(~d1);
 }
 
 static inline int8_t sum(int8_t s1, int8_t s2)
@@ -210,6 +200,9 @@ static inline int8_t sub(int8_t s1, int8_t s2)
 
 static inline int8_t divi(int8_t s1, int8_t s2)
 {
+    if (s2 == 0)
+        return 0;
+
     return h(s1 / s2);
 }
 
