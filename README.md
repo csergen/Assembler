@@ -9,3 +9,14 @@
 
 ## Machine
 ![machine](docs/img/final.jpg)
+
+## EXAMPLES
+
+### Factorial
+![factorial](docs/img/factorial.gif)
+
+### Fibonacci
+![fibonacci](docs/img/fibonacci.gif)
+
+### Counter Example
+![ex](docs/img/ex.gif)
