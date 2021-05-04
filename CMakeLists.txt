@@ -4,6 +4,7 @@ project(Assembler C)
 set(CMAKE_C_STANDARD 11)
 
 include_directories(core)
+include_directories(core/Args)
 include_directories(core/Node)
 include_directories(core/Parser)
 include_directories(core/Tokenizer)
@@ -13,7 +14,8 @@ include_directories(core/Assemble)
 
 set (SRCS
     core/assembler.c
-    core/args.h
+    core/Args/args.h
+    core/Args/args.c
     core/Util/util.h
     core/Util/util.c
     core/Tokenizer/tokenizer.h
@@ -28,4 +30,3 @@ set (SRCS
     core/Assemble/assemble.c)
 
 add_executable(Assembler ${SRCS})
-target_link_libraries(Assembler m)

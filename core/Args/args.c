@@ -1,6 +1,8 @@
-#ifndef __CORE_ARGS_H__
-#define __CORE_ARGS_H__
+#include "args.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <limits.h>
 
 char *argparse(int argc, char **argv)
@@ -25,5 +27,3 @@ char *argparse(int argc, char **argv)
 
     return _filepath;
 }
-
-#endif

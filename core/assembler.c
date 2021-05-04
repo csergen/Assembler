@@ -11,8 +11,8 @@
 #include "assemble.h"
 #include "vm.h"
 
-
-int main(int argc, char **argv)
+int 
+main(int argc, char **argv)
 {
     char *m_file_path = argparse(argc, argv);
 
@@ -40,15 +40,13 @@ int main(int argc, char **argv)
     }
     */
     
-
-    
     load_program(executable_file);
-    //load_program("../output/out2.hex");
-    //load_program("../output/factorial.hex");
+
     free(tk);
     free(m_file_path);
     free(f_source);
 
     close_stream(streamObject);
+
     return 0;
 }

@@ -67,7 +67,7 @@ bool close_stream(StreamObject *_streamObject)
     return status;
 }
 
-bool write_stream(StreamObject *_streamObject, char *const text_)
+void write_stream(StreamObject *_streamObject, char *const text_)
 {
     fprintf(_streamObject->stream, "%s", text_);
 }

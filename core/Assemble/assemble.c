@@ -199,7 +199,7 @@ char *assemble(TokenNode *tk)
     uint8_t lc = DATA_SEGMENT_BEGIN;
     uint8_t pc = CODE_SEGMENT_BEGIN;
     uint8_t data_offset = 0;
-    char *output_hex = "output.hex";
+    char *output_hex = "a.obj";
     StreamObject *sobj = open_stream(output_hex, "w");
     struct adsym *address_symbol_table[255];
     uint8_t c = 0;
