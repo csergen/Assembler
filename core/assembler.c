@@ -26,7 +26,10 @@ int main(int argc, char **argv)
 
     //parse(tk_iter);
     char* executable_file = assemble(tk_iter);
-    /*while (tk)
+
+    // TOKENIZER OUTPUT
+    /*
+    while (tk)
     {
         if (tk->type == NEWLINE)
             printf("\\n\t(%d)\n", tk->type);
@@ -35,6 +38,7 @@ int main(int argc, char **argv)
         tk = tk->next;
     }
     */
+    
 
     
     load_program(executable_file);

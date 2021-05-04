@@ -12,8 +12,7 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends  \
     rm -rf /var/lib/apt/lists/*
 
 COPY . /usr/src/assembler
-RUN mkdir "mkdir /usr/src/assembler/build"
 WORKDIR /usr/src/assembler/build
 RUN cmake ..
 RUN make
-CMD ["./Assembler", "../example/1.asm"]
+CMD ["./Assembler", "../example/branch.asm"]
