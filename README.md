@@ -135,7 +135,7 @@ DEC:
   SP DEC
 ```
 
-# COMPONENTS
+# DEFINITIONS
 
 ### OPCODES
 ```assembly
