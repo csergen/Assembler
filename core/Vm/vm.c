@@ -6,13 +6,13 @@
 #include "util.h"
 #include "vm.h"
 
-#define RED   "\e[1;91m"
-#define GRN   "\e[1;92m"
+#define RED "\e[1;91m"
+#define GRN "\e[1;92m"
 #define WHITE "\e[1;97m"
-#define BLUE  "\e[1;94m"
-#define BGRY  "\x1b[31m"
-#define BRED  "\x1b[40m"
-#define BGRN  "\x1b[42m"
+#define BLUE "\e[1;94m"
+#define BGRY "\x1b[31m"
+#define BRED "\x1b[40m"
+#define BGRN "\x1b[42m"
 #define RESET "\e[0m"
 
 // (8 bit, MSB sign bit, max = 127, min = -128)
@@ -177,7 +177,6 @@ int8_t HEX(const char *binary)
     return h(strtol(binary, NULL, 2));
 }
 
-
 // ########################### OPCODES #############################
 static int8_t not(int8_t d1)
 {
@@ -228,8 +227,8 @@ static void MEMDUMP()
         if (RPC == i)
             printf(GRN "%s %s\n" RESET, MEMORY[j], MEMORY[j + 1]);
         else
-            printf(WHITE "%s" RESET " " WHITE "%s\n"RESET, MEMORY[j], MEMORY[j + 1]);
-        
+            printf(WHITE "%s" RESET " " WHITE "%s\n" RESET, MEMORY[j], MEMORY[j + 1]);
+
         j += 2;
     }
 }
@@ -546,11 +545,8 @@ static void init()
     RTR = h(0x00);
 
     CODE_SEGMENT_END = RPC - 1;
-    DATA_SEGMENT_BEGIN = RPC;
 
     RPC = h(0x01);
-
-    strcpy(MEMORY[0], "00000000");
 }
 
 static void run()
@@ -572,13 +568,29 @@ void load_program(char *executable)
     int8_t hex;
     char *temp;
 
+    int data_end_flag = 0;
+
     while (fgets(buffer, sizeof(buffer), streamObject->stream))
     {
-        if (*buffer != '\n')
+        if (*buffer == '$')
+            data_end_flag = 1;
+
+        if (*buffer != '\n' && *buffer != '$')
         {
-            hex = strtol(buffer, NULL, 16);
-            temp = BIN(hex);
-            strcpy(MEMORY[RPC++], temp);
+            if (data_end_flag == 0)
+            {
+                uint8_t address = strtol(buffer, NULL, 16);
+                fgets(buffer, sizeof(buffer), streamObject->stream);
+                hex = h(strtol(buffer, NULL, 16));
+                temp = BIN(hex);
+                strcpy(MEMORY[address], temp);
+            }
+            else
+            {
+                hex = h(strtol(buffer, NULL, 16));
+                temp = BIN(hex);
+                strcpy(MEMORY[RPC++], temp);
+            }
             free(temp);
         }
     }

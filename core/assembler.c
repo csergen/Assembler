@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     */
 
     
-    //load_program(executable_file);
+    load_program(executable_file);
     //load_program("../output/out2.hex");
     //load_program("../output/factorial.hex");
     free(tk);

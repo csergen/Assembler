@@ -8,6 +8,8 @@
 
 #include "assemble.h"
 
+#define ADDRESS 0x20
+
 static bool in_table(struct adsym *table[255], uint8_t size, char *ch)
 {
     for (int i = 0; i < size; i++)
@@ -142,7 +144,7 @@ char *assemble(TokenNode *tk)
                     {
                         memset(ftk->word, 0, sizeof(char) * 2);
                         sprintf(ftk->word, "%02X", h(tmp->address));
-                        ftk->type = CONSTANT;
+                        ftk->type = ADDRESS;
                     }
                 }
 
@@ -177,7 +179,7 @@ char *assemble(TokenNode *tk)
                 {
                     memset(ftk->word, 0, sizeof(char) * 2);
                     sprintf(ftk->word, "%02X", h(tmp->address));
-                    ftk->type = CONSTANT;
+                    ftk->type = ADDRESS;
                 }
                 else
                 {
@@ -216,9 +218,10 @@ char *assemble(TokenNode *tk)
         }
         else
         {
-            char *inst = malloc(12);
+            char *inst = malloc(8);
+            char *dt = malloc(9);
 
-            if (ftk->type != NEWLINE)
+            if (ftk->type != NEWLINE && ftk->type != ENDMARKER)
             {
                 if (ftk->type == OPCODE)
                 {
@@ -251,39 +254,87 @@ char *assemble(TokenNode *tk)
                     ftk = ftk->next;
                 }
 
+
                 if (ftk->type == REGISTER)
                 {
                     if (strcmp(ftk->word, "AX") == 0)
                         strcat(inst, "00");
-                    else if (strcmp(ftk->word, "BX") == 0)
+                    if (strcmp(ftk->word, "BX") == 0)
                         strcat(inst, "01");
-                    else if (strcmp(ftk->word, "CX") == 0)
+                    if (strcmp(ftk->word, "CX") == 0)
                         strcat(inst, "10");
-                    else if (strcmp(ftk->word, "DX") == 0)
+                    if (strcmp(ftk->word, "DX") == 0)
                         strcat(inst, "11");
+
 
                     ftk = ftk->next->next;
 
-                    if (ftk->type == NUMBER || ftk->type == CONSTANT)
-                        strcat(inst, "11");
-                    else if (ftk->type == REGISTER)
-                        strcat(inst, "01");
-                    else if (ftk->type == LSQB)
-                        strcat(inst, "10");
-
-                    ftk = ftk->next;
-
                     if (ftk->type == LSQB)
+                    {
+                        strcat(inst, "10");
                         ftk = ftk->next;
+                        uint8_t tmp = strtol(ftk->word, NULL, 16);
+                        char *bin_tmp = BIN(tmp);
+                        strcpy(dt, bin_tmp);
+                        free(bin_tmp);
+                        ftk = ftk->next->next;
+                    }
+                    else if (ftk->type == NUMBER || ftk->type == CONSTANT)
+                    {
+                        strcat(inst, "11");
+                        uint8_t tmp = strtol(ftk->word, NULL, 16);
+                        char *bin_tmp = BIN(tmp);
+                        strcpy(dt, bin_tmp);
+                        free(bin_tmp);
+                        ftk = ftk->next;
+                    }
+                    else if (ftk->type == REGISTER)
+                    {
+                        strcat(inst, "01");
+                        uint8_t tmp;
+                        if (strcmp(ftk->word, "AX") == 0)
+                            tmp = 0x00;
+                        if (strcmp(ftk->word, "BX") == 0)
+                            tmp = 0x01;
+                        if (strcmp(ftk->word, "CX") == 0)
+                            tmp = 0x02;
+                        if (strcmp(ftk->word, "DX") == 0)
+                            tmp = 0x03;
+
+                        char *bin_tmp = BIN(tmp);
+                        strcpy(dt, bin_tmp);
+                        free(bin_tmp);
+                        ftk = ftk->next;
+                    }
                 }
-                else if (ftk->type == CONSTANT)
+                else if (ftk->type == ADDRESS)
                 {
-                    printf("CONSTANT: %s\n", ftk->word);
+                    strcat(inst, "00");
+                    strcat(inst, "00");
+                    uint8_t tmp = strtol(ftk->word, NULL, 16);
+                    char *bin_tmp = BIN(tmp);
+                    strcpy(dt, bin_tmp);
+                    free(bin_tmp);
                 }
+
+                uint8_t tmp1 = h(HEX(inst));
+                uint8_t tmp2 = h(HEX(dt));
+
+                char w1[2];
+                sprintf(w1, "%02X", tmp1);
+                write_stream(sobj, w1);
+
+                sprintf(w1, "%02X", tmp2);
+                write_stream(sobj, w1);
+
+                write_stream(sobj, "\n");
+                free(inst);
+                free(dt);
             }
         }
+
         ftk = ftk->next;
     }
-
+    close_stream(sobj);
     return output_hex;
 }
