@@ -78,7 +78,10 @@ get_word_type(char* word)
 
     for (int i = 0; i < strlen(word); i++) 
     {
-        if (isalpha(word[i]) != 0)
+        if (word[i] == '-')
+            digit_counter++;
+
+        else if (isalpha(word[i]) != 0)
             alpha_counter++;
 
         else if (isdigit(word[i]) != 0)
@@ -118,6 +121,7 @@ tokenize(char* source)
             break;
 
         case NUMBER:
+        case MINUS:
             do {
                 add_char(tok->word, curchr);
                 next_state(source, &c, &curchr, &curtype);
@@ -142,7 +146,6 @@ tokenize(char* source)
         case RSQB:
         case COLON:
         case COMMA:
-        case MINUS:
         case NAN:
             add_char(tok->word, curchr);
             next_state(source, &c, &curchr, &curtype);

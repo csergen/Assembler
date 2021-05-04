@@ -196,18 +196,12 @@ char *assemble(TokenNode *tk)
 {
     TokenNode *ftk = tk;
     TokenNode *fftk = ftk;
-
     uint8_t lc = DATA_SEGMENT_BEGIN;
     uint8_t pc = CODE_SEGMENT_BEGIN;
-
     uint8_t data_offset = 0;
-
     char *output_hex = "output.hex";
-
     StreamObject *sobj = open_stream(output_hex, "w");
-
     struct adsym *address_symbol_table[255];
-
     uint8_t c = 0;
 
     // ##################### FIRST PASS #######################
@@ -310,9 +304,7 @@ char *assemble(TokenNode *tk)
 
     printf("========ADDRESS SYMBOL TABLE==========\n");
     for (int i = 0; i < c; i++)
-    {
         printf("%s\t%d\t%02X\n", address_symbol_table[i]->symbol, address_symbol_table[i]->data, h(address_symbol_table[i]->address));
-    }
     printf("======================================\n");
 
     // ################## SECOND PASS ##################
@@ -356,8 +348,8 @@ char *assemble(TokenNode *tk)
 
     // CODE SEGMENT
     ftk = fftk;
-    char *ins = malloc(9*sizeof(char));
-    char *addr = malloc(9*sizeof(char));
+    char *ins = malloc(9 * sizeof(char));
+    char *addr = malloc(9 * sizeof(char));
 
     while (ftk)
     {
@@ -432,7 +424,7 @@ char *assemble(TokenNode *tk)
                     write_stream(sobj, "\n");
                     memset(ins, 0, sizeof(ins));
                     memset(addr, 0, sizeof(addr));
-                } 
+                }
             }
         }
 
