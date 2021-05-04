@@ -10,6 +10,22 @@
 ## Machine
 ![machine](docs/img/final.jpg)
 
+
+## build with cmake
+```console
+$ cmake -S . -B build/Debug -D CMAKE_BUILD_TYPE=Release
+$ cd build/Debug
+$ ./Assembler <source_file_path>
+```
+## build with docker
+```console
+$ sudo systemctl start docker
+$ sudo docker build -t <custom_image_name> <dockerfile_path>
+$ sudo docker run -it --rm --name <custom_container_name> <custom_image_name>
+```
+
+
+
 ## EXAMPLES
 
 ### Factorial
