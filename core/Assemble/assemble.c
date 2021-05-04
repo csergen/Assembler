@@ -207,7 +207,7 @@ char *assemble(TokenNode *tk)
     // ##################### FIRST PASS #######################
     while (ftk)
     {
-        struct adsym *a1 = malloc(sizeof(a1));
+        struct adsym *a1 = malloc(sizeof(struct adsym));
 
         if (ftk->type == LABEL)
         {
@@ -248,7 +248,7 @@ char *assemble(TokenNode *tk)
                 //printf("[%s]\n", ftk->word);
                 if (!in_table(address_symbol_table, c, ftk->word))
                 {
-                    printf("%s is not in the table\n");
+                    printf("%s is not in the table\n", ftk->word);
                     exit(EXIT_FAILURE);
                 }
                 ftk = ftk->next->next;
@@ -338,7 +338,7 @@ char *assemble(TokenNode *tk)
     // DATA SEGMENT
     for (uint8_t i = 0; i < data_offset; i++)
     {
-        char ch[2];
+        char ch[3];
         sprintf(ch, "%02X", h(address_symbol_table[i]->address));
         write_stream(sobj, ch);
         sprintf(ch, "%02X", h(address_symbol_table[i]->data));
@@ -379,7 +379,7 @@ char *assemble(TokenNode *tk)
 
                 if (ftk->type == NEWLINE || ftk->type == ENDMARKER)
                 {
-                    char ch[2];
+                    char ch[3];
                     uint8_t tmp1 = h(HEX(ins));
                     sprintf(ch, "%02X", tmp1);
 
@@ -416,7 +416,7 @@ char *assemble(TokenNode *tk)
                         exit(EXIT_FAILURE);
                     }
 
-                    char w1[2];
+                    char w1[3];
                     sprintf(w1, "%02X", tmp1);
                     write_stream(sobj, w1);
 
@@ -424,8 +424,8 @@ char *assemble(TokenNode *tk)
                     write_stream(sobj, w1);
 
                     write_stream(sobj, "\n");
-                    memset(ins, 0, sizeof(ins));
-                    memset(addr, 0, sizeof(addr));
+                    memset(ins, 0, sizeof(char*));
+                    memset(addr, 0, sizeof(char*));
                 }
             }
         }
