@@ -35,7 +35,42 @@ $ sudo docker build -t <custom_image_name> <dockerfile_path>
 $ sudo docker run -it --rm --name <custom_container_name> <custom_image_name>
 ```
 
+## Style Guide
 
+```assembly
+# code definition
+OPCODE REGISTER,[REGISTER, MEMORY, IMMEDIATE]
+
+# example
+HRK AX, BX
+    or
+HRK AX, [<variable_name>]
+    or
+HRK AX, 10
+```
+
+```assembly
+# variable definition
+<variable_name>: <immediate>
+
+# example
+var1: 10
+    or
+var1: -10
+```
+
+```assembly
+# branching
+
+<LABEL>: <NEWLINE>
+    something
+    <BRANCHING_OPCODE> <LABEL>
+
+# example
+LOP:
+    TOP AX, 10
+    SS LOP
+```
 
 ## EXAMPLES
 
