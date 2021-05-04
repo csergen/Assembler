@@ -13,7 +13,7 @@ CFLAGS := $(INC_FLAGS) -g -Wall
 
 .PHONY: $(LINKER)
 
-program: $(BUILD_DIR)/$(LINKER)
+$(LINKER): $(BUILD_DIR)/$(LINKER)
 
 $(BUILD_DIR)/%.c.o: %.c
 	mkdir -p $(@D)
