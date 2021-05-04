@@ -1,4 +1,5 @@
 # Assembler
+[![CMake](https://github.com/csergen/Assembler/actions/workflows/cmake.yml/badge.svg?branch=main)](https://github.com/csergen/Assembler/actions/workflows/cmake.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a0630c3f393d44f0be60b17416025324)](https://www.codacy.com/gh/csergen/Assembler/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=csergen/Assembler&amp;utm_campaign=Badge_Grade)
 
 
@@ -8,14 +9,3 @@
 
 ## Machine
 ![machine](docs/img/final.jpg)
-
-## EXAMPLES
-
-### Factorial
-![factorial](docs/img/factorial.gif)
-
-### Fibonacci
-![fibonacci](docs/img/fibonacci.gif)
-
-### Counter Example
-![ex](docs/img/ex.gif)
