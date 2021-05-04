@@ -2,7 +2,7 @@
 [![CMake](https://github.com/csergen/Assembler/actions/workflows/cmake.yml/badge.svg?branch=main)](https://github.com/csergen/Assembler/actions/workflows/cmake.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a0630c3f393d44f0be60b17416025324)](https://www.codacy.com/gh/csergen/Assembler/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=csergen/Assembler&amp;utm_campaign=Badge_Grade)
 
-[![csergen](https://circleci.com/gh/csergen/assembler.svg?style=svg)](https://app.circleci.com/pipelines/github/csergen/Assembler?invite=true)
+[![csergen](https://circleci.com/gh/csergen/Assembler.svg?style=svg)](https://app.circleci.com/pipelines/github/csergen/Assembler?invite=true)
 
 
 ![C Badge](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)
