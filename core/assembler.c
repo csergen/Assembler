@@ -1,13 +1,14 @@
+#if defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__)
+    #error WINDOWS does not supported. (ABORTED)
+#endif
+
 #include "util.h"
 #include "args.h"
 
 #include "node.h"
-
 #include "tokenizer.h"
 #include "parser.h"
-
 #include "assemble.h"
-
 #include "vm.h"
 
 
