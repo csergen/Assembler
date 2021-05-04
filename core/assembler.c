@@ -26,6 +26,8 @@ int main(int argc, char **argv)
 
     //parse(tk_iter);
     char* executable_file = assemble(tk_iter);
+
+    // TOKENIZER OUTPUT
     /*
     while (tk)
     {

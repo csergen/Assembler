@@ -302,10 +302,12 @@ char *assemble(TokenNode *tk)
         ftk = ftk->next;
     }
 
+    /*
     printf("========ADDRESS SYMBOL TABLE==========\n");
     for (int i = 0; i < c; i++)
         printf("%s\t%d\t%02X\n", address_symbol_table[i]->symbol, address_symbol_table[i]->data, h(address_symbol_table[i]->address));
     printf("======================================\n");
+    */
 
     // ################## SECOND PASS ##################
     ftk = fftk;
