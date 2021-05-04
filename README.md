@@ -33,8 +33,60 @@ $ sudo docker run -it --rm --name <custom_container_name> <custom_image_name>
 ### Factorial
 ![factorial](docs/img/factorial.gif)
 
+```assembly
+RN: 5
+
+HRK AX, [RN]
+HRK CX, AX
+
+FACT: 
+      CIK AX, 1
+      SS END
+      CRP CX, AX
+      SP FACT
+
+END:
+```
+
 ### Fibonacci
 ![fibonacci](docs/img/fibonacci.gif)
 
+```assembly
+x1: 1
+x2: 1
+
+HRK AX, [x1]
+HRK BX, [x2]
+
+FIB:
+  HRK CX, AX
+  TOP AX, BX
+  HRK DX, AX
+  HRK BX, CX
+  HRK AX, DX
+  SP FIB
+```
+
 ### Counter Example
 ![ex](docs/img/ex.gif)
+
+```assembly
+co: 1
+
+HRK AX, 10
+HRK BX, 0
+
+HRK CX, AX
+DEG CX
+TOP CX, 1
+
+LOP:
+  TOP BX, [co]
+  TOP CX, [co]
+  SSD LOP
+  SS DEC
+
+DEC:
+  CIK BX, [co]
+  SP DEC
+```
