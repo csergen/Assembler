@@ -2,18 +2,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <math.h>
 
 #include "util.h"
 #include "vm.h"
 
-#define RED   "\e[1;91m"
-#define GRN   "\e[1;92m"
+#define RED "\e[1;91m"
+#define GRN "\e[1;92m"
 #define WHITE "\e[1;97m"
-#define BLUE  "\e[1;94m"
-#define BGRY  "\x1b[40m"
-#define BRED  "\x1b[40m"
-#define BGRN  "\x1b[42m"
+#define BLUE "\e[1;94m"
+#define BGRY "\x1b[31m"
+#define BRED "\x1b[40m"
+#define BGRN "\x1b[42m"
 #define RESET "\e[0m"
 
 // (8 bit, MSB sign bit, max = 127, min = -128)
@@ -23,21 +22,19 @@ static int8_t RAX = 0x00;
 static int8_t RBX = 0x00;
 static int8_t RCX = 0x00;
 static int8_t RDX = 0x00;
-static int8_t RIR = 0x00;
-static int8_t RAR = 0x00;
-static int8_t RDR = 0x00;
+static u_int8_t RIR = 0x00;
+static u_int8_t RAR = 0x00;
+static u_int8_t RDR = 0x00;
 static int8_t RTR = 0x00;
-static int8_t RPC = 0x01;
+static u_int8_t RPC = 0x01;
 
 // MEMORY
 static char MEMORY[MEMORY_SIZE][INSTRUCTION_SIZE + 1];
 
-// ########################### UTILS ###############################
-// mask
-#define h(hex) hex & 0xFF
+// ########################### GENERAL UTILS ###############################
 
 // hex to bin
-static char *BIN(const int8_t hex)
+char *BIN(const int8_t hex)
 {
     char *binary = (char *)malloc(9);
     char *hex_buffer = malloc(3);
@@ -175,24 +172,15 @@ static char *BIN(const int8_t hex)
 }
 
 // bin to hex
-static inline int8_t HEX(const char *binary)
+int8_t HEX(const char *binary)
 {
     return h(strtol(binary, NULL, 2));
 }
 
+// ########################### OPCODES #############################
 static int8_t not(int8_t d1)
 {
-    char *buffer = malloc(sizeof(8));
-    char *dr = BIN(RDR);
-
-    for (int i = 7; i >= 0; i--)
-        buffer[i] = dr[i] == '1' ? '0' : '1';
-
-    int8_t res = HEX(buffer);
-    free(buffer);
-    free(dr);
-
-    return res;
+    return h(~d1);
 }
 
 static inline int8_t sum(int8_t s1, int8_t s2)
@@ -212,6 +200,9 @@ static inline int8_t sub(int8_t s1, int8_t s2)
 
 static inline int8_t divi(int8_t s1, int8_t s2)
 {
+    if (s2 == 0)
+        return 0;
+
     return h(s1 / s2);
 }
 
@@ -229,8 +220,8 @@ static void MEMDUMP()
         if (RPC == i)
             printf(GRN "%s %s\n" RESET, MEMORY[j], MEMORY[j + 1]);
         else
-            printf(WHITE "%s" RESET " " WHITE "%s\n"RESET, MEMORY[j], MEMORY[j + 1]);
-        
+            printf(WHITE "%s" RESET " " WHITE "%s\n" RESET, MEMORY[j], MEMORY[j + 1]);
+
         j += 2;
     }
 }
@@ -547,11 +538,8 @@ static void init()
     RTR = h(0x00);
 
     CODE_SEGMENT_END = RPC - 1;
-    DATA_SEGMENT_BEGIN = RPC;
 
     RPC = h(0x01);
-
-    strcpy(MEMORY[0], "00000000");
 }
 
 static void run()
@@ -566,20 +554,36 @@ static void run()
     }
 }
 
-void load_program(char *src_file)
+void load_program(char *executable)
 {
-    StreamObject *streamObject = open_stream(src_file, "r");
+    StreamObject *streamObject = open_stream(executable, "r");
     char buffer[3];
     int8_t hex;
     char *temp;
 
+    int data_end_flag = 0;
+
     while (fgets(buffer, sizeof(buffer), streamObject->stream))
     {
-        if (*buffer != '\n')
+        if (*buffer == '$')
+            data_end_flag = 1;
+
+        if (*buffer != '\n' && *buffer != '$')
         {
-            hex = strtol(buffer, NULL, 16);
-            temp = BIN(hex);
-            strcpy(MEMORY[RPC++], temp);
+            if (data_end_flag == 0)
+            {
+                uint8_t address = strtol(buffer, NULL, 16);
+                fgets(buffer, sizeof(buffer), streamObject->stream);
+                hex = h(strtol(buffer, NULL, 16));
+                temp = BIN(hex);
+                strcpy(MEMORY[address], temp);
+            }
+            else
+            {
+                hex = h(strtol(buffer, NULL, 16));
+                temp = BIN(hex);
+                strcpy(MEMORY[RPC++], temp);
+            }
             free(temp);
         }
     }

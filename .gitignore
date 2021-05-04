@@ -33,10 +33,14 @@
 
 *.asm
 
+*.hex
+
 build/
 .vscode/
 assembler
 run
+run-docker
+output/
+example/
 *.sh
 *.gdb_history
-*.hex

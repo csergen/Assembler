@@ -2,18 +2,18 @@
 #define __CORE_VM_VM_H__
 
 // OPCODES
-#define HRK 0x00
-#define TOP 0x01
-#define CRP 0x02
-#define CIK 0x03
-#define BOL 0x04
-#define VE 0x05
-#define VEYA 0x06
-#define DEG 0x07
-#define SS 0x08
-#define SSD 0x09
-#define SN 0x0A
-#define SP 0x0B
+#define HRK   0x00
+#define TOP   0x01
+#define CRP   0x02
+#define CIK   0x03
+#define BOL   0x04
+#define VE    0x05
+#define VEYA  0x06
+#define DEG   0x07
+#define SS    0x08
+#define SSD   0x09
+#define SN    0x0A
+#define SP    0x0B
 
 // REGISTERS
 #define AX 0x0
@@ -38,13 +38,17 @@
 #define INSTRUCTION_SIZE 0x8
 
 // MEMORY OFFSETS
-static unsigned int CODE_SEGMENT_BEGIN = 0x01;
-static unsigned int CODE_SEGMENT_END;
+static uint8_t CODE_SEGMENT_BEGIN = 0x01;
+static uint8_t CODE_SEGMENT_END = 0xc8;
 
-static unsigned int DATA_SEGMENT_BEGIN;
-static unsigned int DATA_SEGMENT_END = 0xff;
+static uint8_t DATA_SEGMENT_BEGIN = 0xc9;
+static uint8_t DATA_SEGMENT_END = 0xff;
 
+// mask
+#define h(hex) hex & 0xFF
 
+char* BIN(const int8_t);
+int8_t HEX(const char*);
 void load_program(char *);
 
 #endif
