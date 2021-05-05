@@ -1,9 +1,10 @@
 program = field, { field };
 
 field 
-= [label],
-  opcode, (register | memory_addressing)
-  [',', (register | memory_addressing | constant)]
+= [label], newline,
+  [label], immediate,
+  opcode, register
+  [',', (register | memory_addressing | immediate)]
   newline;
 
 label 
@@ -32,13 +33,10 @@ register
 memory_addressing
 = '[', ADDRESS, ']';
 
-constant
-= { decimal | hexadecimal | binary | octal };
+immediate
+= { decimal };
 
 
 decimal = { 0-9 | d, ', {0-9}, ' };
-hexadecimal = h, ', { 0-9a-F }, ';
-binary = b, ', { 0 | 1 }, ';
-octal = o, ', { 0-7 }, ';
 
 newline = { [\n] | [\r\n] };

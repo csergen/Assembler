@@ -71,6 +71,52 @@ LOP:
     SS LOP
 ```
 
+# Grammar (ebnf)
+```yaml
+program = field, { field };
+
+field 
+= [label], newline,
+  [label], immediate,
+  opcode, register
+  [',', (register | memory_addressing | immediate)]
+  newline;
+
+label 
+= STRING ':';
+
+opcode
+=  HRK
+  |TOP
+  |CIK
+  |CRP
+  |BOL
+  |DEG
+  |VE
+  |VEYA
+  |SS
+  |SSD
+  |SN
+  |SP;
+
+register 
+=  AX
+  |BX
+  |CX
+  |DX;
+
+memory_addressing
+= '[', ADDRESS, ']';
+
+immediate
+= { decimal };
+
+
+decimal = { 0-9 | d, ', {0-9}, ' };
+
+newline = { [\n] | [\r\n] };
+```
+
 
 # EXAMPLES
 
