@@ -4,7 +4,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a0630c3f393d44f0be60b17416025324)](https://www.codacy.com/gh/csergen/Assembler/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=csergen/Assembler&amp;utm_campaign=Badge_Grade)
 [![csergen](https://circleci.com/gh/csergen/Assembler.svg?style=svg)](https://app.circleci.com/pipelines/github/csergen/Assembler?invite=true)
 
-*`std version: 11, gcc: 11.1.1`*
+*`std version: 11`* *`gcc: 11.1.1`*
 | Platform | Version | Status |
 | --- | --- | --- |
 |![Fedora Badge](https://img.shields.io/badge/Fedora-294172?style=for-the-badge&logo=fedora&logoColor=white)    |`33, 34` `64 bit`   | `PASSED ✅`|
