@@ -190,7 +190,7 @@ DEC:
 # **DEFINITIONS**
 
 ### OPCODES
-```assembly
+```
 hrk   0000    0
 top   0001    1
 crp   0010    2
@@ -207,7 +207,7 @@ sp    1011    B
 
 
 ### REGISTERS
-```assembly
+```
 ax  00  0
 bx  01  1
 cx  10  2
@@ -215,7 +215,7 @@ dx  11  3
 ```
 
 ### ADDRESSING MODE
-```assembly
+```
 jumping     00  0
 register    01  1
 memory      10  2
@@ -225,7 +225,7 @@ immediate   11  3
 ### INSTRUCTION TABLE
 
 #### HRK
-```assembly
+```
 hrk reg(ax), reg(?)     0000 00 01  01
 hrk reg(bx), reg(?)     0000 01 01  05
 hrk reg(cx), reg(?)     0000 10 01  09
