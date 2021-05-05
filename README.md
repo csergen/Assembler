@@ -13,7 +13,7 @@
 </div>
 
 # **Getting Started**
-![flow](docs/img/flow.png)
+![flow](docs/img/floww.png)
 
 
 ## Build with make ( **`version 4.3`** )
