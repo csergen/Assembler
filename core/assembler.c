@@ -2,6 +2,8 @@
     #error WINDOWS does not supported. (ABORTED)
 #endif
 
+
+
 #include "util.h"
 #include "args.h"
 
@@ -25,7 +27,7 @@ main(int argc, char **argv)
     TokenNode *tk = tokenize(f_source);
     TokenNode *tk_iter = tk;
 
-    //parse(tk_iter);
+    parse(tk_iter, f_source);
     char* executable_file = assemble(tk_iter);
 
     // TOKENIZER OUTPUT
@@ -39,8 +41,10 @@ main(int argc, char **argv)
         tk = tk->next;
     }
     */
-    
+    printf("\nPress enter to run the code...");
+    getc(stdin);
     load_program(executable_file);
+    printf("Done");
 
     free(tk);
     free(m_file_path);
