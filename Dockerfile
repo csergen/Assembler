@@ -15,4 +15,6 @@ COPY . /usr/src/assembler
 WORKDIR /usr/src/assembler/build
 RUN cmake ..
 RUN make
-CMD ["./Assembler", "../example/branch.asm"]
+WORKDIR ../
+CMD ["./Assembler"]
+#CMD ["./Assembler", "../example/branch.asm"]
