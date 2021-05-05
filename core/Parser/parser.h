@@ -3,5 +3,5 @@
 
 #include "tokenizer.h"
 
-void parse(TokenNode* tk);
+void parse(TokenNode* tk, char *sr);
 #endif
