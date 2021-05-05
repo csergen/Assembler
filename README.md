@@ -11,7 +11,6 @@
 |![Ubuntu Badge](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)    |`18.04 LTS` `64 bit`| `PASSED ✅`|
 |![Windows Badge](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white) |`10` `64 bit`       | `FAILED ❌`|
 
-
 ![flow](docs/img/flow.png)
 </div>
 
@@ -36,7 +35,7 @@ $ sudo docker build -t <custom_image_name> <dockerfile_path>
 $ sudo docker run -it --rm --name <custom_container_name> <custom_image_name>
 ```
 
-# **Style Guide**
+# Style Guide
 
 ### Code Definition
 ```assembly
@@ -73,7 +72,7 @@ LOP:
     SS LOP
 ```
 
-# **Grammar ( ebnf )**
+# Grammar ( ebnf )
 ```yaml
 program = field, { field };
 
@@ -123,7 +122,7 @@ newline = { [\n] | [\r\n] };
 ```
 
 
-# **EXAMPLES**
+# EXAMPLES
 
 ### Factorial
 ![factorial](docs/img/factorial.gif)
@@ -186,7 +185,7 @@ DEC:
   SP DEC
 ```
 
-# **DEFINITIONS**
+# DEFINITIONS
 
 ### OPCODES
 ```
