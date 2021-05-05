@@ -6,11 +6,11 @@
 
 ![C Badge](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white) *`version: 11, gcc: 11.1.1`*
 
-![Fedora Badge](https://img.shields.io/badge/Fedora-294172?style=for-the-badge&logo=fedora&logoColor=white) *`version: 33, 34, status: PASSING ✅`*
+![Fedora Badge](https://img.shields.io/badge/Fedora-294172?style=for-the-badge&logo=fedora&logoColor=white) *`version: 33, 34` `status: PASSING ✅`*
 
-![Ubuntu Badge](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white) *`version: 18.04 LTS, status: PASSING ✅`*
+![Ubuntu Badge](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white) *`version: 18.04 LTS` `status: PASSING ✅`*
 
-![Windows Badge](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white) *`version: 10, status: FAILED ❌`*
+![Windows Badge](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white) *`version: 10` `status: FAILED ❌`*
 
 # **Getting Started**
 ![machine](docs/img/final.jpg)
