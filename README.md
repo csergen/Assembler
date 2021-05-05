@@ -225,7 +225,7 @@ immediate   11  3
 ### INSTRUCTION TABLE
 
 #### HRK
-```
+```assembly
 hrk reg(ax), reg(?)     0000 00 01  01
 hrk reg(bx), reg(?)     0000 01 01  05
 hrk reg(cx), reg(?)     0000 10 01  09
