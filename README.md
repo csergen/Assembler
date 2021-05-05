@@ -1,40 +1,41 @@
 # Assembler
 [![CMake](https://github.com/csergen/Assembler/actions/workflows/cmake.yml/badge.svg?branch=main)](https://github.com/csergen/Assembler/actions/workflows/cmake.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a0630c3f393d44f0be60b17416025324)](https://www.codacy.com/gh/csergen/Assembler/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=csergen/Assembler&amp;utm_campaign=Badge_Grade)
-
 [![csergen](https://circleci.com/gh/csergen/Assembler.svg?style=svg)](https://app.circleci.com/pipelines/github/csergen/Assembler?invite=true)
 
 
-![C Badge](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)
-![Fedora Badge](https://img.shields.io/badge/Fedora-294172?style=for-the-badge&logo=fedora&logoColor=white)
-![Ubuntu Badge](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
+![C Badge](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white) *`version: 11, gcc: 11.1.1`*
 
+![Fedora Badge](https://img.shields.io/badge/Fedora-294172?style=for-the-badge&logo=fedora&logoColor=white) *`version: 33, 34, status: PASSING ✅`*
+
+![Ubuntu Badge](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white) *`version: 18.04 LTS, status: PASSING ✅`*
+
+![Windows Badge](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white) *`version: 10, status: FAILED ❌`*
+
+# **Getting Started**
 ![machine](docs/img/final.jpg)
 
 
-## build with make
+## Build with make ( **`version 4.3`** )
 ```console
 $ make
-
-$ make run
-
 $ make clean
 ```
 
-## build with cmake
+## Build with ![cmake badge](https://img.shields.io/badge/CMake-%23008FBA.svg?&style=for-the-badge&logo=cmake&logoColor=white) ( **`version 3.19.7`** )
 ```console
 $ cmake -S . -B build/Debug -D CMAKE_BUILD_TYPE=Release
 $ cd build/Debug
 $ ./Assembler <source_file_path>
 ```
-## build with docker
+## Build with ![docker badge](https://img.shields.io/badge/docker-%230db7ed.svg?&style=for-the-badge&logo=docker&logoColor=white) ( **`version 20.10.6`** )
 ```xml
 $ sudo systemctl start docker
 $ sudo docker build -t <custom_image_name> <dockerfile_path>
 $ sudo docker run -it --rm --name <custom_container_name> <custom_image_name>
 ```
 
-# Style Guide
+# **Style Guide**
 
 ```assembly
 # code definition
@@ -71,7 +72,7 @@ LOP:
     SS LOP
 ```
 
-# Grammar (ebnf)
+# **Grammar ( ebnf )**
 ```yaml
 program = field, { field };
 
@@ -121,7 +122,7 @@ newline = { [\n] | [\r\n] };
 ```
 
 
-# EXAMPLES
+# **EXAMPLES**
 
 ### Factorial
 ![factorial](docs/img/factorial.gif)
@@ -184,7 +185,7 @@ DEC:
   SP DEC
 ```
 
-# DEFINITIONS
+# **DEFINITIONS**
 
 ### OPCODES
 ```assembly
