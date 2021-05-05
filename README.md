@@ -10,11 +10,11 @@
 |![Fedora Badge](https://img.shields.io/badge/Fedora-294172?style=for-the-badge&logo=fedora&logoColor=white)    |`33, 34` `64 bit`   | `PASSED ✅`|
 |![Ubuntu Badge](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)    |`18.04 LTS` `64 bit`| `PASSED ✅`|
 |![Windows Badge](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white) |`10` `64 bit`       | `FAILED ❌`|
-</div>
+
 
 # **Getting Started**
 ![flow](docs/img/flow.png)
-
+</div>
 
 ## Build with make ( **`version 4.3`** )
 ```console
