@@ -13,3 +13,6 @@ docs/
 run
 build/
 output/
+.circleci/
+.github/
+Makefile
