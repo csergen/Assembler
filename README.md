@@ -76,14 +76,17 @@ LOP:
 program = field, { field };
 
 field 
-= [label], newline,
-  [label], immediate,
+= [label],
+  [variable],
   opcode, register
   [',', (register | memory_addressing | immediate)]
   newline;
 
 label 
-= STRING ':';
+= STRING ':' newline;
+
+variable
+= STRING ':' immediate;
 
 opcode
 =  HRK
