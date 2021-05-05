@@ -130,6 +130,8 @@ field_stmt(void)
             return 0;
         } else {
           next_token();
+          if (s_token->type != REGISTER)
+            return 0;
           next_token();
         }
 
