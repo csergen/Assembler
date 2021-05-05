@@ -12,10 +12,10 @@
 |![Windows Badge](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white) |`10` `64 bit`       | `FAILED ❌`|
 
 
-# **Getting Started**
 ![flow](docs/img/flow.png)
 </div>
 
+# **Getting Started**
 ## Build with make ( **`version 4.3`** )
 ```console
 $ make
