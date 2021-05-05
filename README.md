@@ -26,6 +26,7 @@ $ make clean
 ```console
 $ cmake -S . -B build/Debug -D CMAKE_BUILD_TYPE=Release
 $ cd build/Debug
+$ make
 $ ./Assembler <source_file_path>
 ```
 ## Build with ![docker badge](https://img.shields.io/badge/docker-%230db7ed.svg?&style=for-the-badge&logo=docker&logoColor=white) ( **`version 20.10.6`** )
