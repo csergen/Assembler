@@ -24,9 +24,8 @@ $ make clean
 ## Build with ![cmake badge](https://img.shields.io/badge/CMake-%23008FBA.svg?&style=for-the-badge&logo=cmake&logoColor=white) ( **`version 3.19.7`** )
 ```console
 $ cmake -S . -B build/Debug -D CMAKE_BUILD_TYPE=Debug
-$ cd build/Debug
-$ make
-$ ./Assembler <source_file_path>
+$ cmake --build build/Debug
+$ ./build/Debug/Assembler <source_file_path>
 ```
 ## Build with ![docker badge](https://img.shields.io/badge/docker-%230db7ed.svg?&style=for-the-badge&logo=docker&logoColor=white) ( **`version 20.10.6`** )
 ```xml
