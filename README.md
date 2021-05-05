@@ -24,7 +24,7 @@ $ make clean
 
 ## Build with ![cmake badge](https://img.shields.io/badge/CMake-%23008FBA.svg?&style=for-the-badge&logo=cmake&logoColor=white) ( **`version 3.19.7`** )
 ```console
-$ cmake -S . -B build/Debug -D CMAKE_BUILD_TYPE=Release
+$ cmake -S . -B build/Debug -D CMAKE_BUILD_TYPE=Debug
 $ cd build/Debug
 $ make
 $ ./Assembler <source_file_path>
