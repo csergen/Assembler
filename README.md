@@ -6,12 +6,11 @@
 </div>
 
 ![C Badge](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white) *`version: 11, gcc: 11.1.1`*
-
-![Fedora Badge](https://img.shields.io/badge/Fedora-294172?style=for-the-badge&logo=fedora&logoColor=white) *`version: 33, 34` `status: PASSING ✅`*
-
-![Ubuntu Badge](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white) *`version: 18.04 LTS` `status: PASSING ✅`*
-
-![Windows Badge](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white) *`version: 10` `status: FAILED ❌`*
+| Platform | Version | Status |
+| --- | --- | --- |
+|![Fedora Badge](https://img.shields.io/badge/Fedora-294172?style=for-the-badge&logo=fedora&logoColor=white)    |`33, 34` `64 bit`   | `PASSED ✅`|
+|![Ubuntu Badge](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)    |`18.04 LTS` `64 bit`| `PASSED ✅`|
+|![Windows Badge](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white) |`10` `64 bit`       | `FAILED ❌`|
 
 
 # **Getting Started**
