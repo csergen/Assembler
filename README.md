@@ -39,8 +39,8 @@ $ sudo docker run -it --rm --name <custom_container_name> <custom_image_name>
 
 # **Style Guide**
 
+### Code Definition
 ```assembly
-# code definition
 OPCODE REGISTER,[REGISTER, MEMORY, IMMEDIATE]
 
 # example
@@ -51,8 +51,8 @@ HRK AX, [<variable_name>]
 HRK AX, 10
 ```
 
+### Variable Definition
 ```assembly
-# variable definition
 <variable_name>: <immediate>
 
 # example
@@ -61,8 +61,8 @@ var1: 10
 var1: -10
 ```
 
+### Branching
 ```assembly
-# branching
 
 <LABEL>: <NEWLINE>
     something
