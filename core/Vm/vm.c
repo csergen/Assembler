@@ -587,7 +587,7 @@ void load_program(char *executable)
             free(temp);
         }
     }
-
+    
     init();
     run();
 }

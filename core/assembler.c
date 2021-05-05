@@ -45,8 +45,8 @@ main(int argc, char **argv)
     free(tk);
     free(m_file_path);
     free(f_source);
-
     close_stream(streamObject);
+
 
     return 0;
 }
