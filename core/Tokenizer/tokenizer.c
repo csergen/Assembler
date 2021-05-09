@@ -101,7 +101,6 @@ TokenNode*
 tokenize(char* source)
 {
     int lineno = 0;
-    int lc = 0;
     int c = 0;
     char curchr;
     int curtype;
@@ -180,7 +179,7 @@ tokenize(char* source)
     free(tok);
     TokenNode* end_token = new_token();
     end_token->type = ENDMARKER;
-    memset(end_token->word, 0, sizeof(end_token->word));
+    memset(end_token->word, 0, sizeof(char)+1);
     add_token(root, end_token);
 
     root = root->next;

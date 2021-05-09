@@ -558,7 +558,8 @@ static void run()
 void load_program(char *executable)
 {
     StreamObject *streamObject = open_stream(executable, "r");
-    if (streamObject == NULL) {
+    if (streamObject == NULL)
+    {
         printf("something went wrong!\n");
         exit(EXIT_FAILURE);
     }
@@ -579,10 +580,13 @@ void load_program(char *executable)
             if (data_end_flag == 0)
             {
                 uint8_t address = strtol(buffer, NULL, 16);
-                fgets(buffer, sizeof(buffer), streamObject->stream);
-                hex = h(strtol(buffer, NULL, 16));
-                temp = BIN(hex);
-                strcpy(MEMORY[address], temp);
+                if (address >= DATA_SEGMENT_BEGIN && address <= DATA_SEGMENT_END)
+                {
+                    fgets(buffer, sizeof(buffer), streamObject->stream);
+                    hex = h(strtol(buffer, NULL, 16));
+                    temp = BIN(hex);
+                    strcpy(MEMORY[address], temp);
+                }
             }
             else
             {
@@ -593,7 +597,7 @@ void load_program(char *executable)
             free(temp);
         }
     }
-    
+
     init();
     run();
 }

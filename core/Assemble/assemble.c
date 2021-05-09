@@ -424,8 +424,8 @@ char *assemble(TokenNode *tk)
                     write_stream(sobj, w1);
 
                     write_stream(sobj, "\n");
-                    memset(ins, 0, sizeof(char*));
-                    memset(addr, 0, sizeof(char*));
+                    memset(ins, 0, sizeof(char)*9);
+                    memset(addr, 0, sizeof(char)*9);
                 }
             }
         }

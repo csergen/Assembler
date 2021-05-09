@@ -65,22 +65,6 @@ variable_stmt()
   return 0;
 }
 
-
-static int
-register_stmt()
-{
-    if (s_token->type == STRING)
-    {
-        if (strcmp(s_token->word, "AX") == 0 || strcmp(s_token->word, "BX") == 0 || strcmp(s_token->word, "CX") == 0 || strcmp(s_token->word, "DX") == 0)
-        {
-            next_token();
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
 static int
 memory_stmt()
 {

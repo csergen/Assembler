@@ -45,7 +45,7 @@ static uint8_t DATA_SEGMENT_BEGIN = 0xc9;
 static uint8_t DATA_SEGMENT_END = 0xff;
 
 // mask
-#define h(hex) hex & 0xFF
+#define h(n) n & 0xFF
 
 char* BIN(const int8_t);
 int8_t HEX(const char*);
