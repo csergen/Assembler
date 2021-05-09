@@ -11,7 +11,6 @@
 |![Ubuntu Badge](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)    |`18.04 LTS` `64 bit`| `PASSED ✅`|
 |![Windows Badge](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white) |`10` `64 bit`       | `FAILED ❌`|
 
-
 ![flow](docs/img/flow.png)
 </div>
 
@@ -25,9 +24,8 @@ $ make clean
 ## Build with ![cmake badge](https://img.shields.io/badge/CMake-%23008FBA.svg?&style=for-the-badge&logo=cmake&logoColor=white) ( **`version 3.19.7`** )
 ```console
 $ cmake -S . -B build/Debug -D CMAKE_BUILD_TYPE=Debug
-$ cd build/Debug
-$ make
-$ ./Assembler <source_file_path>
+$ cmake --build build/Debug
+$ ./build/Debug/Assembler <source_file_path>
 ```
 ## Build with ![docker badge](https://img.shields.io/badge/docker-%230db7ed.svg?&style=for-the-badge&logo=docker&logoColor=white) ( **`version 20.10.6`** )
 ```xml
@@ -36,7 +34,7 @@ $ sudo docker build -t <custom_image_name> <dockerfile_path>
 $ sudo docker run -it --rm --name <custom_container_name> <custom_image_name>
 ```
 
-# **Style Guide**
+# Style Guide
 
 ### Code Definition
 ```assembly
@@ -73,7 +71,7 @@ LOP:
     SS LOP
 ```
 
-# **Grammar ( ebnf )**
+# Grammar ( ebnf )
 ```yaml
 program = field, { field };
 
@@ -123,7 +121,7 @@ newline = { [\n] | [\r\n] };
 ```
 
 
-# **EXAMPLES**
+# EXAMPLES
 
 ### Factorial
 ![factorial](docs/img/factorial.gif)
@@ -186,7 +184,7 @@ DEC:
   SP DEC
 ```
 
-# **DEFINITIONS**
+# DEFINITIONS
 
 ### OPCODES
 ```
