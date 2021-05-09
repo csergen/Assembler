@@ -558,6 +558,11 @@ static void run()
 void load_program(char *executable)
 {
     StreamObject *streamObject = open_stream(executable, "r");
+    if (streamObject == NULL) {
+        printf("something went wrong!\n");
+        exit(EXIT_FAILURE);
+    }
+
     char buffer[3];
     int8_t hex;
     char *temp;

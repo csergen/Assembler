@@ -2,8 +2,6 @@
     #error WINDOWS does not supported. (ABORTED)
 #endif
 
-
-
 #include "util.h"
 #include "args.h"
 
@@ -29,18 +27,7 @@ main(int argc, char **argv)
 
     parse(tk_iter, f_source);
     char* executable_file = assemble(tk_iter);
-
-    // TOKENIZER OUTPUT
-    /*
-    while (tk)
-    {
-        if (tk->type == NEWLINE)
-            printf("\\n\t(%d)\n", tk->type);
-        else
-            printf("%s\t(%d)\n", tk->word, tk->type);
-        tk = tk->next;
-    }
-    */
+    
     printf("\nPress enter to run the code...");
     getc(stdin);
     load_program(executable_file);
