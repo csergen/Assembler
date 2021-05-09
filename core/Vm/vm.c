@@ -201,8 +201,9 @@ static inline int8_t sub(int8_t s1, int8_t s2)
 
 static inline int8_t divi(int8_t s1, int8_t s2)
 {
-    if (s2 == 0) {
-        printf(RED"Division by zero: unexpected"RESET);
+    if (s2 == 0)
+    {
+        printf(RED "Division by zero: unexpected" RESET);
         exit(EXIT_FAILURE);
     }
 
@@ -582,13 +583,10 @@ void load_program(char *executable)
             if (data_end_flag == 0)
             {
                 uint8_t address = strtol(buffer, NULL, 16);
-                if (address >= DATA_SEGMENT_BEGIN)
-                {
-                    fgets(buffer, sizeof(buffer), streamObject->stream);
-                    hex = h(strtol(buffer, NULL, 16));
-                    temp = BIN(hex);
-                    strcpy(MEMORY[address], temp);
-                }
+                fgets(buffer, sizeof(buffer), streamObject->stream);
+                hex = h(strtol(buffer, NULL, 16));
+                temp = BIN(hex);
+                strcpy(MEMORY[address], temp);
             }
             else
             {
