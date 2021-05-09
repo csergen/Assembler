@@ -22,11 +22,10 @@ get_char_type(char curchr)
         return RSQB;
     case ':':
         return COLON;
-    case '.':
-        return DOT;
     case '-':
         return MINUS;
     case '\n':
+    case '\r':
         return NEWLINE;
     case ' ':
         return WHITESPACE;
@@ -39,13 +38,15 @@ static void
 next_state(char* source, int* c, char* curchr, int* curtype)
 {
     *curchr = source[(*c)++];
-    if (curchr == NULL)
-        *curchr = '\n';
     *curtype = get_char_type(*curchr);
 }
 
 static inline void
-add_char(char* word, char curchr) { strncat(word, &curchr, 1); }
+add_char(char* word, char curchr) { 
+    int len = strlen(word);
+    word[len] = curchr;
+    word[len+1] = '\0';
+}
 
 static int
 get_word_type(char* word)

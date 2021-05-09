@@ -82,9 +82,9 @@ char *read_stream(StreamObject *_streamObject)
 
     char *m_destination = malloc(sizeof(char) * _streamObject->size);
     int m_line_counter = 0;
-    char m_line;
+    int m_line;
 
-    while ((m_line=fgetc(_streamObject->stream)) != EOF)
+    while ((m_line=getc(_streamObject->stream)) != EOF)
         m_destination[m_line_counter++] = m_line;
 
     return m_destination;

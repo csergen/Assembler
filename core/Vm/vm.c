@@ -201,8 +201,10 @@ static inline int8_t sub(int8_t s1, int8_t s2)
 
 static inline int8_t divi(int8_t s1, int8_t s2)
 {
-    if (s2 == 0)
-        return 0;
+    if (s2 == 0) {
+        printf(RED"Division by zero: unexpected"RESET);
+        exit(EXIT_FAILURE);
+    }
 
     return h(s1 / s2);
 }
