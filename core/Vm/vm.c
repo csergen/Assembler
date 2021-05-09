@@ -582,7 +582,7 @@ void load_program(char *executable)
             if (data_end_flag == 0)
             {
                 uint8_t address = strtol(buffer, NULL, 16);
-                if (address >= DATA_SEGMENT_BEGIN && address < DATA_SEGMENT_END)
+                if (address >= DATA_SEGMENT_BEGIN && address < DATA_SEGMENT_END-1)
                 {
                     fgets(buffer, sizeof(buffer), streamObject->stream);
                     hex = h(strtol(buffer, NULL, 16));
