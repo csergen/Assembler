@@ -78,9 +78,8 @@ program = field, { field };
 field 
 = [label],
   [variable],
-  opcode, register
-  [',', (register | memory_addressing | immediate)]
-  newline;
+  opcode, [register | memory_addressing | immediate]
+  [',', (register | memory_addressing | immediate)] newline
 
 label 
 = STRING ':' newline;
@@ -115,7 +114,7 @@ immediate
 = { decimal };
 
 
-decimal = { 0-9 | d, ', {0-9}, ' };
+decimal = { -128 ... +127 };
 
 newline = { [\n] | [\r\n] };
 ```
