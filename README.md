@@ -9,7 +9,7 @@
 | --- | --- | --- |
 |![Fedora Badge](https://img.shields.io/badge/Fedora-294172?style=for-the-badge&logo=fedora&logoColor=white)    |`33, 34` `64 bit`   | `PASSED ✅`|
 |![Ubuntu Badge](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)    |`18.04 LTS` `64 bit`| `PASSED ✅`|
-|![Windows Badge](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white) |`10` `64 bit`       | `FAILED ❌`|
+|![Windows Badge](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white) |`10` `64 bit`       | `PASSED ✅`|
 
 ![flow](docs/img/flow.png)
 </div>
@@ -23,9 +23,15 @@ $ make clean
 
 ## Build with ![cmake badge](https://img.shields.io/badge/CMake-%23008FBA.svg?&style=for-the-badge&logo=cmake&logoColor=white) ( **`version 3.19.7`** )
 ```console
+    for linux
 $ cmake -S . -B build/Debug -D CMAKE_BUILD_TYPE=Debug
 $ cmake --build build/Debug
 $ ./build/Debug/Assembler <source_file_path>
+
+    for windows
+$ cmake -S . -B build/ -A x64 -G "Visual Studio 16 2019"
+$ cmake --build build/ --config Debug
+
 ```
 ## Build with ![docker badge](https://img.shields.io/badge/docker-%230db7ed.svg?&style=for-the-badge&logo=docker&logoColor=white) ( **`version 20.10.6`** )
 ```xml
