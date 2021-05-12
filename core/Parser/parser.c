@@ -4,12 +4,7 @@
 
 #include "parser.h"
 #include "node.h"
-
-#define RED "\e[1;91m"
-#define GREEN "\e[1;92m"
-#define BGRY "\x1b[90m"
-#define WHITE "\e[1;97m"
-#define RESET "\e[0m"
+#include "color.h"
 
 static TokenNode *s_token;
 static char *src;
@@ -75,10 +70,11 @@ memory_stmt()
 
     if (s_token->type == LABEL)
     {
-      next_token();
 
-      if (s_token->type == RSQB)
+      if (s_token->next->type == RSQB) {
+        next_token();
         return 1;
+      }
     }
   }
 
@@ -168,7 +164,6 @@ program_stmt(void)
     else if (field_stmt())
     {
     }
-
     else
     {
       perror(RED "Error " RESET);
@@ -180,7 +175,7 @@ program_stmt(void)
           row++;
 
         if (row == s_token->lineno)
-          printf(RED "%c" RESET, src[i]);
+          printf(BRED "%c" RESET, src[i]);
         else
           printf(BGRY "%c" RESET, src[i]);
       }
@@ -197,5 +192,5 @@ void parse(TokenNode *tk, char *sr)
   s_token = tk;
   src = sr;
   program_stmt();
-  printf(GREEN "%s" RESET, sr);
+  printf(GRN "%s" RESET, sr);
 }

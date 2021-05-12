@@ -2,19 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <sys/types.h>
 
 #include "util.h"
 #include "vm.h"
-
-#define RED "\e[1;91m"
-#define GRN "\e[1;92m"
-#define WHITE "\e[1;97m"
-#define BLUE "\e[1;94m"
-#define BGRY "\x1b[31m"
-#define BRED "\x1b[40m"
-#define BGRN "\x1b[42m"
-#define RESET "\e[0m"
+#include "color.h"
 
 // (8 bit, MSB sign bit, max = 127, min = -128)
 
@@ -23,11 +14,11 @@ static int8_t RAX = 0x00;
 static int8_t RBX = 0x00;
 static int8_t RCX = 0x00;
 static int8_t RDX = 0x00;
-static u_int8_t RIR = 0x00;
-static u_int8_t RAR = 0x00;
-static u_int8_t RDR = 0x00;
+static uint8_t RIR = 0x00;
+static uint8_t RAR = 0x00;
+static uint8_t RDR = 0x00;
 static int8_t RTR = 0x00;
-static u_int8_t RPC = 0x01;
+static uint8_t RPC = 0x01;
 
 // MEMORY
 static char MEMORY[MEMORY_SIZE][INSTRUCTION_SIZE + 1];
@@ -224,7 +215,7 @@ static void MEMDUMP()
         if (RPC == i)
             printf(GRN "%s %s\n" RESET, MEMORY[j], MEMORY[j + 1]);
         else
-            printf(WHITE "%s" RESET " " WHITE "%s\n" RESET, MEMORY[j], MEMORY[j + 1]);
+            printf("%s %s\n", MEMORY[j], MEMORY[j + 1]);
 
         j += 2;
     }
@@ -243,15 +234,15 @@ static void REGDUMP()
     char *bin_rpc = BIN(RPC);
 
     printf(BLUE "\n─────────────────────────────────────────Registers─────\n" RESET);
-    printf(BGRY "AX\t%s\t%02X\t%d\n" RESET, bin_rax, h(RAX), RAX);
+    printf("AX\t%s\t%02X\t%d\n" RESET, bin_rax, h(RAX), RAX);
     printf(WHITE "BX\t%s\t%02X\t%d\n" RESET, bin_rbx, h(RBX), RBX);
-    printf(BGRY "CX\t%s\t%02X\t%d\n" RESET, bin_rcx, h(RCX), RCX);
+    printf("CX\t%s\t%02X\t%d\n", bin_rcx, h(RCX), RCX);
     printf(WHITE "DX\t%s\t%02X\t%d\n\n" RESET, bin_rdx, h(RDX), RDX);
-    printf(BGRY "IR\t%s\t%02X\t%d\n" RESET, bin_rir, h(RIR), RIR);
+    printf("IR\t%s\t%02X\t%d\n", bin_rir, h(RIR), RIR);
     printf(WHITE "AR\t%s\t%02X\t%d\n" RESET, bin_rar, h(RAR), RAR);
-    printf(BGRY "DR\t%s\t%02X\t%d\n" RESET, bin_rdr, h(RDR), RDR);
+    printf("DR\t%s\t%02X\t%d\n", bin_rdr, h(RDR), RDR);
     printf(WHITE "TR\t%s\t%02X\t%d\n\n" RESET, bin_rtr, h(RTR), RTR);
-    printf(BGRY "PC\t%s\t%02X\t%d\n" RESET, bin_rpc, h(RPC), RPC);
+    printf("PC\t%s\t%02X\t%d\n", bin_rpc, h(RPC), RPC);
 
     free(bin_rax);
     free(bin_rbx);

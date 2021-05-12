@@ -33,11 +33,13 @@ int main(int argc, char **argv)
         printf("\n");
         parse(tk_iter, f_source);
         char *executable_file = assemble(tk_iter);
-
-        printf("\nPress enter to run the code...");
-        getc(stdin);
-        load_program(executable_file);
-        printf("Done");
+        if (executable_file)
+        {
+            printf("\nPress enter to run the code...");
+            getc(stdin);
+            load_program(executable_file);
+            printf("Done");
+        }
     }
 
     free(tk);

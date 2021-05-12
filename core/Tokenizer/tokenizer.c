@@ -30,7 +30,6 @@ get_char_type(char curchr)
     case ' ':
         return WHITESPACE;
     }
-
     return NAN;
 }
 
@@ -151,13 +150,11 @@ tokenize(char* source)
             next_state(source, &c, &curchr, &curtype);
             break;
 
-        case OFFSET:
-            return NULL;
-
         default:
             add_char(tok->word, curchr);
             next_state(source, &c, &curchr, &curtype);
             break;
+
         }
 
         if (tok) {

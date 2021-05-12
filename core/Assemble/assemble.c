@@ -5,6 +5,7 @@
 
 #include "tokenizer.h"
 #include "vm.h"
+#include "color.h"
 
 #include "assemble.h"
 
@@ -315,7 +316,7 @@ char *assemble(TokenNode *tk)
     {
         if (ftk->type == LABEL)
         {
-            if (ftk->next->type == NEWLINE || ftk->next->next->type == NEWLINE)
+            if (ftk->next->type == NEWLINE || ftk->next->type == ENDMARKER || ( (ftk->next->type == RSQB && ftk->next->next->type == NEWLINE) || (ftk->next->type == RSQB && ftk->next->next->type == ENDMARKER)))
             {
                 struct adsym *tmp = get_from_table(address_symbol_table, c, ftk->word);
 
@@ -327,7 +328,8 @@ char *assemble(TokenNode *tk)
                 }
                 else
                 {
-                    printf("%s is not in the table.", ftk->word);
+                    printf(RED"\n'%s' is not in the reserved table."RESET, ftk->word);
+                    return NULL;
                     exit(EXIT_FAILURE);
                 }
             }
@@ -412,7 +414,7 @@ char *assemble(TokenNode *tk)
 
                     if (b == 0)
                     {
-                        printf("error: not in the reserved table");
+                        printf(RED"error: not in the reserved table"RESET);
                         exit(EXIT_FAILURE);
                     }
 
@@ -424,8 +426,8 @@ char *assemble(TokenNode *tk)
                     write_stream(sobj, w1);
 
                     write_stream(sobj, "\n");
-                    memset(ins, 0, sizeof(char)*9);
-                    memset(addr, 0, sizeof(char)*9);
+                    memset(ins, 0, sizeof(char) * 9);
+                    memset(addr, 0, sizeof(char) * 9);
                 }
             }
         }

@@ -1,12 +1,5 @@
 #include "util.h"
 
-/**
- * @brief This function opens the file.
- * 
- * @param _filepath 
- * @param _mode 
- * @return StreamObject* 
- */
 StreamObject *open_stream(char *_filepath, char *_mode)
 {
     StreamObject *temp_streamObject = malloc(sizeof(StreamObject));
@@ -34,12 +27,6 @@ StreamObject *open_stream(char *_filepath, char *_mode)
     return temp_streamObject;
 }
 
-/**
- * @brief This function closes the file.
- * 
- * @param _streamObject 
- * @return boolean
- */
 bool close_stream(StreamObject *_streamObject)
 {
     int status = 1;
@@ -81,11 +68,19 @@ char *read_stream(StreamObject *_streamObject)
         return NULL;
 
     char *m_destination = malloc(sizeof(char) * _streamObject->size);
+    /*
     int m_line_counter = 0;
     int m_line;
 
     while ((m_line=getc(_streamObject->stream)) != EOF)
         m_destination[m_line_counter++] = m_line;
+    */
+
+    for (int i = 0; i < _streamObject->size; i++)
+    {
+        int c = getc(_streamObject->stream);
+        m_destination[i] = c;
+    }    
 
     return m_destination;
 }

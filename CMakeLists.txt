@@ -14,6 +14,7 @@ include_directories(core/Assemble)
 
 set (SRCS
     core/assembler.c
+    core/color.h
     core/Args/args.h
     core/Args/args.c
     core/Util/util.h
