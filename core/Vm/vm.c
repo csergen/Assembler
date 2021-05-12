@@ -204,10 +204,10 @@ static inline int8_t divi(int8_t s1, int8_t s2)
 // ##################### MEMORY | REGISTER DUMP ######################
 static void MEMDUMP()
 {
-#ifdef _WIN64 || _WIN32
-	printf(RED "\n------------------------------------------Memory-------\n" RESET);
+#ifdef _WIN32
+	printf(RED "\n--------------------------------------------Memory-------\n" RESET);
 #else
-	printf(RED "\n──────────────────────────────────────────Memory───────\n" RESET);
+	printf(RED "\n─────────────────────────────────────────────Memory───────\n" RESET);
 #endif
     
 
@@ -238,10 +238,10 @@ static void REGDUMP()
     char *bin_rtr = BIN(RTR);
     char *bin_rpc = BIN(RPC);
 
-#ifdef _WIN64 || _WIN32
-	printf(RED "\n------------------------------------------Registers-------\n" RESET);
+#ifdef _WIN32
+	printf(BLUE "\n------------------------------------------Registers-------\n" RESET);
 #else
-	printf(RED "\n──────────────────────────────────────────Registers───────\n" RESET);
+	printf(BLUE "\n──────────────────────────────────────────Registers───────\n" RESET);
 #endif
     printf("AX\t%s\t%02X\t%d\n" RESET, bin_rax, h(RAX), RAX);
     printf(WHITE "BX\t%s\t%02X\t%d\n" RESET, bin_rbx, h(RBX), RBX);
@@ -550,7 +550,7 @@ static void run()
 {
     while (RPC < CODE_SEGMENT_END)
     {
-#ifdef _WIN64 || _WIN32
+#ifdef _WIN32
 	system("cls");
 #else
 	system("clear");
