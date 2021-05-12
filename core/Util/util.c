@@ -80,12 +80,19 @@ char *read_stream(StreamObject *_streamObject)
         || _streamObject->size == 0)
         return NULL;
 
-    char *m_destination = malloc(sizeof(char) * _streamObject->size);
+    char *m_destination = (char*) malloc(sizeof(char)*_streamObject->size);
     int m_line_counter = 0;
     int m_line;
 
-    while ((m_line=getc(_streamObject->stream)) != EOF)
-        m_destination[m_line_counter++] = m_line;
+    for (int i = 0; i < _streamObject->size; i++)
+    {
+        int c = getc(_streamObject->stream);
+        if (c == EOF) {
+            m_destination[i] = 0x00;
+            break;
+        } 
+        m_destination[i] = c;
+    }
 
     return m_destination;
 }

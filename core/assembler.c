@@ -1,5 +1,5 @@
 #if defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__)
-#error WINDOWS does not supported. (ABORTED)
+//#error WINDOWS does not supported. (ABORTED)
 #endif
 
 #include "util.h"
@@ -22,6 +22,7 @@ int main(int argc, char **argv)
     char *f_source = read_stream(streamObject);
 
     TokenNode *tk = tokenize(f_source);
+
     if (tk == NULL)
     {
         perror("error: tokenize");

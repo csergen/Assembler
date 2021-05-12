@@ -103,13 +103,13 @@ tokenize(char* source)
 {
     int lineno = 0;
     int c = 0;
-    char curchr;
-    int curtype;
+    char curchr = 0;
+    int curtype = 0;
     TokenNode* root = new_token();
     TokenNode* tok = new_token();
 
     next_state(source, &c, &curchr, &curtype);
-    while (c <= strlen(source)) {
+    while (c < strlen(source)) {
         switch (curtype) {
         case STRING:
             do {
@@ -176,7 +176,7 @@ tokenize(char* source)
         }
     }
 
-    //free(tok->word);
+
     free(tok);
     TokenNode* end_token = new_token();
     end_token->type = ENDMARKER;

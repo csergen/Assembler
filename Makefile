@@ -16,11 +16,11 @@ CFLAGS := $(INC_FLAGS) -g -Wall -std=c11
 $(LINKER): $(BUILD_DIR)/$(LINKER)
 
 $(BUILD_DIR)/%.c.o: %.c
-	mkdir -p $(@D)
+	mkdir $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/$(LINKER): $(OBJS)
-	mkdir -p $(@D)
+	mkdir $(@D)
 	$(CC) $^ -o $@
 
 .PHONY: clean
