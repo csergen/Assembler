@@ -46,6 +46,7 @@ int main(int argc, char **argv)
     close_stream(streamObject);
 	
 #ifdef _WIN32
+	printf("\nPress enter to exit...");
 	getc(stdin);
 #endif
 
