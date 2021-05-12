@@ -315,7 +315,7 @@ char *assemble(TokenNode *tk)
     {
         if (ftk->type == LABEL)
         {
-            if (ftk->next->type == NEWLINE)
+            if (ftk->next->type == NEWLINE || ftk->next->next->type == NEWLINE)
             {
                 struct adsym *tmp = get_from_table(address_symbol_table, c, ftk->word);
 
