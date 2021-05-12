@@ -237,7 +237,7 @@ char *assemble(TokenNode *tk)
                 // variable repetition
                 else
                 {
-                    printf("Error: %s is repeated\n", ftk->word);
+                    printf(BRED"Error: %s is repeated\n"RESET, ftk->word);
                     exit(EXIT_FAILURE);
                 }
             }
@@ -249,7 +249,7 @@ char *assemble(TokenNode *tk)
                 //printf("[%s]\n", ftk->word);
                 if (!in_table(address_symbol_table, c, ftk->word))
                 {
-                    printf("%s is not in the table\n", ftk->word);
+                    printf(BRED"%s is not in the table\n"RESET, ftk->word);
                     exit(EXIT_FAILURE);
                 }
                 ftk = ftk->next->next;
@@ -328,7 +328,7 @@ char *assemble(TokenNode *tk)
                 }
                 else
                 {
-                    printf(RED"\n'%s' is not in the reserved table."RESET, ftk->word);
+                    printf(BRED"\n'%s' is not in the reserved table."RESET, ftk->word);
                     return NULL;
                     exit(EXIT_FAILURE);
                 }
@@ -414,7 +414,7 @@ char *assemble(TokenNode *tk)
 
                     if (b == 0)
                     {
-                        printf(RED"error: not in the reserved table"RESET);
+                        printf(BRED"error: not in the reserved table"RESET);
                         exit(EXIT_FAILURE);
                     }
 

@@ -1,13 +1,3 @@
-/*
-#ifdef _WIN32
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-	if (isatty( fileno(stdin) ) == 0)
-		setmode(fileno(stdin), O_BINARY);
-#endif
-*/
-
 #include "util.h"
 #include "args.h"
 
@@ -28,6 +18,7 @@ int main(int argc, char **argv)
     char *f_source = read_stream(streamObject);
 
     TokenNode *tk = tokenize(f_source);
+
 
     if (tk == NULL)
     {
@@ -55,4 +46,5 @@ int main(int argc, char **argv)
     close_stream(streamObject);
 
     return 0;
+	
 }

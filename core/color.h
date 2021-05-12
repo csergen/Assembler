@@ -1,6 +1,18 @@
-#ifndef A5940F6E_1D37_4D32_AF1D_1699AB0D88BE
-#define A5940F6E_1D37_4D32_AF1D_1699AB0D88BE
+#ifndef __CORE_COLOR_H__
+#define __CORE_COLOR_H__
 
+#ifdef _WIN32
+#define RED "\033[31m"
+#define GRN "\033[32m"
+#define WHITE "\033[38m"
+#define BLUE "\033[38m"
+#define RESET "\033[0m"
+
+#define BGRY "\033[0m"
+#define BRED "\033[41m"
+#define RESET "\033[0m"
+
+#else
 #define RED "\x1B[31m"
 #define GRN "\x1B[32m"
 #define WHITE "\x1B[37m"
@@ -10,7 +22,6 @@
 #define BGRY "\x1B[40m"
 #define BRED "\x1B[41m"
 #define RESET "\033[0m"
+#endif
 
-
-
-#endif /* A5940F6E_1D37_4D32_AF1D_1699AB0D88BE */
+#endif

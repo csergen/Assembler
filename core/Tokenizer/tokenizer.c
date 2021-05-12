@@ -158,6 +158,7 @@ tokenize(char* source)
         }
 
         if (tok) {
+			printf("%s\n", tok->word);
             tok->lineno = lineno;
             tok->type = get_word_type(tok->word);
             add_token(root, tok);
@@ -177,7 +178,6 @@ tokenize(char* source)
     free(tok);
     TokenNode* end_token = new_token();
     end_token->type = ENDMARKER;
-    memset(end_token->word, 0, sizeof(char)+1);
     add_token(root, end_token);
 
     root = root->next;

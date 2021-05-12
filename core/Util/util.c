@@ -67,12 +67,11 @@ char *read_stream(StreamObject *_streamObject)
     if (!_streamObject->status || _streamObject->size == 0)
         return NULL;
 
-    char *m_destination = malloc(sizeof(char) * _streamObject->size);
+    char *m_destination = calloc(_streamObject->size, sizeof(char));
 
-    char *buffer = (char *)calloc(0xff, sizeof(char));
+    char *buffer = (char *)malloc(0xff);
     while (fgets(buffer, 0xff, _streamObject->stream))
-    {
         strcat(m_destination, buffer);
-    }
+
     return m_destination;
 }
