@@ -1,3 +1,4 @@
+/*
 #ifdef _WIN32
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -5,6 +6,7 @@
 	if (isatty( fileno(stdin) ) == 0)
 		setmode(fileno(stdin), O_BINARY);
 #endif
+*/
 
 #include "util.h"
 #include "args.h"
@@ -24,9 +26,9 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
 
     char *f_source = read_stream(streamObject);
-    printf("%s", f_source);
 
     TokenNode *tk = tokenize(f_source);
+
     if (tk == NULL)
     {
         perror("error: tokenize");
@@ -34,11 +36,6 @@ int main(int argc, char **argv)
     else
     {
         TokenNode *tk_iter = tk;
-        while (tk)
-        {
-            printf("%s\t%d\n", tk->word, tk->type);
-            tk = tk->next;
-        }
 
         printf("\n");
         parse(tk_iter, f_source);
