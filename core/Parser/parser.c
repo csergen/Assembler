@@ -71,7 +71,8 @@ memory_stmt()
     if (s_token->type == LABEL)
     {
 
-      if (s_token->next->type == RSQB) {
+      if (s_token->next->type == RSQB)
+      {
         next_token();
         return 1;
       }
@@ -123,21 +124,23 @@ field_stmt(void)
       if (s_token->type != REGISTER)
         return 0;
       next_token();
-    }
 
-    if (s_token->type == COMMA)
-    {
-      next_token();
+      if (s_token->type == COMMA)
+      {
+        next_token();
 
-      if (s_token->type == NUMBER || s_token->type == CONSTANT)
-      {
-      }
-      else if (s_token->type == LSQB)
-      {
-        if (memory_stmt() == 0)
+        if (s_token->type == NUMBER || s_token->type == CONSTANT)
+        {
+        }
+        else if (s_token->type == LSQB)
+        {
+          if (memory_stmt() == 0)
+            return 0;
+        }
+        else if (s_token->type != REGISTER)
           return 0;
-      }
-      else if (s_token->type != REGISTER)
+      } 
+      else
         return 0;
     }
 

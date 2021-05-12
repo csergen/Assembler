@@ -30,6 +30,7 @@ int main(int argc, char **argv)
 
         printf("\n");
         parse(tk_iter, f_source);
+        /*
         char *executable_file = assemble(tk_iter);
         if (executable_file)
         {
@@ -38,6 +39,7 @@ int main(int argc, char **argv)
             load_program(executable_file);
             printf("Done");
         }
+        */
     }
 
     free(tk);
