@@ -24,13 +24,13 @@ $ make clean
 ## Build with ![cmake badge](https://img.shields.io/badge/CMake-%23008FBA.svg?&style=for-the-badge&logo=cmake&logoColor=white) ( **`version 3.19.7`** )
 ```console
     for linux
-$ cmake -S . -B build/Debug -D CMAKE_BUILD_TYPE=Debug
-$ cmake --build build/Debug
-$ ./build/Debug/Assembler <source_file_path>
+$ cmake -S . -B build/ -DCMAKE_BUILD_TYPE=Debug
 
     for windows
 $ cmake -S . -B build/ -A x64 -G "Visual Studio 16 2019"
+
 $ cmake --build build/ --config Debug
+$ ./build/Assembler <source_file_path>
 
 ```
 ## Build with ![docker badge](https://img.shields.io/badge/docker-%230db7ed.svg?&style=for-the-badge&logo=docker&logoColor=white) ( **`version 20.10.6`** )
