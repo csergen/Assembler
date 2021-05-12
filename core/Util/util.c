@@ -6,7 +6,7 @@ StreamObject *open_stream(char *_filepath, char *_mode)
     temp_streamObject->path = _filepath;
     temp_streamObject->mode = _mode;
     temp_streamObject->stream = fopen(temp_streamObject->path,
-                                    temp_streamObject->mode);
+                                      temp_streamObject->mode);
     struct stat st;
     stat(temp_streamObject->path, &st);
     temp_streamObject->size = st.st_size;
@@ -18,7 +18,8 @@ StreamObject *open_stream(char *_filepath, char *_mode)
         return 0;
     }
 
-    if (temp_streamObject->size == 0 && strcmp(_mode, "r") == 0) {
+    if (temp_streamObject->size == 0 && strcmp(_mode, "r") == 0)
+    {
         perror("File is empty");
         return 0;
     }
@@ -36,8 +37,8 @@ bool close_stream(StreamObject *_streamObject)
     else if (_streamObject->status)
     {
         status = fclose(_streamObject->stream) ? 1 : 0;
-        if (status == 0) 
-        { 
+        if (status == 0)
+        {
             _streamObject->stream = NULL;
             _streamObject->path = NULL;
             _streamObject->size = 0;
@@ -63,24 +64,15 @@ void write_stream(StreamObject *_streamObject, char *const text_)
 
 char *read_stream(StreamObject *_streamObject)
 {
-    if (!_streamObject->status
-        || _streamObject->size == 0)
+    if (!_streamObject->status || _streamObject->size == 0)
         return NULL;
 
     char *m_destination = malloc(sizeof(char) * _streamObject->size);
-    /*
-    int m_line_counter = 0;
-    int m_line;
 
-    while ((m_line=getc(_streamObject->stream)) != EOF)
-        m_destination[m_line_counter++] = m_line;
-    */
-
-    for (int i = 0; i < _streamObject->size; i++)
+    char *buffer = (char *)calloc(0xff, sizeof(char));
+    while (fgets(buffer, 0xff, _streamObject->stream))
     {
-        int c = getc(_streamObject->stream);
-        m_destination[i] = c;
-    }    
-
+        strcat(m_destination, buffer);
+    }
     return m_destination;
 }
