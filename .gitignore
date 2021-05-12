@@ -44,3 +44,4 @@ output/
 example/
 *.sh
 *.gdb_history
+.vs/
