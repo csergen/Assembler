@@ -7,7 +7,7 @@
 
 char *argparse(int argc, char **argv)
 {
-    char *_filepath = malloc(sizeof(char) * FILENAME_MAX);
+    char *buffer = malloc(sizeof(char) * FILENAME_MAX);
 
     if (argc > 2)
     {
@@ -16,7 +16,7 @@ char *argparse(int argc, char **argv)
     }
     else if (argc == 2)
     {
-        strcpy(_filepath, argv[1]);
+        strcpy(buffer, argv[1]);
     }
     else
     {
@@ -26,5 +26,5 @@ char *argparse(int argc, char **argv)
         //fscanf(stdin, "%s", _filepath);
     }
 
-    return _filepath;
+    return buffer;
 }
