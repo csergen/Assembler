@@ -50,7 +50,7 @@ add_char(char* word, char curchr) {
 static int
 get_word_type(char* word)
 {
-    if (strlen(word) == 1)
+    if (strlen(word) == 1 && !isalpha(word[0]))
         return get_char_type(word[0]);
 
     if (strcmp(word, "HRK") == 0

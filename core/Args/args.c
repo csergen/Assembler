@@ -7,7 +7,7 @@
 
 char *argparse(int argc, char **argv)
 {
-    char *_filepath = malloc(sizeof(char) * FILENAME_MAX);
+    char *buffer = malloc(sizeof(char) * FILENAME_MAX);
 
     if (argc > 2)
     {
@@ -16,14 +16,15 @@ char *argparse(int argc, char **argv)
     }
     else if (argc == 2)
     {
-        strcpy(_filepath, argv[1]);
+        strcpy(buffer, argv[1]);
     }
     else
     {
         printf("Enter file path: ");
-        scanf("%255s", _filepath);
-        //fscanf(stdin, "%s", _filepath);
+        scanf("%255[^\n]%*c", buffer);
+        //scanf("%255s", buffer);
+        //fscanf(stdin, "%s", buffer);
     }
 
-    return _filepath;
+    return buffer;
 }

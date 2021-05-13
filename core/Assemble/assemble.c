@@ -11,6 +11,25 @@
 
 #define ADDRESS 0x20
 
+static void error_repetition(char *str)
+{
+    printf(BRED "\nError: %s is repeated\n" RESET, str);
+    exit(EXIT_FAILURE);
+}
+
+static void error_notintable(char *str)
+{
+    printf(BRED "\nError: %s is not in the adress-symbol table\n" RESET, str);
+    exit(EXIT_FAILURE);
+}
+
+
+static void error_notinreservedtable()
+{
+    printf(BRED "\nError: instruction is not in the reserved table\n" RESET);
+    exit(EXIT_FAILURE);
+}
+
 static bool in_table(struct adsym *table[255], uint8_t size, char *ch)
 {
     for (int i = 0; i < size; i++)
@@ -200,7 +219,7 @@ char *assemble(TokenNode *tk)
     uint8_t lc = DATA_SEGMENT_BEGIN;
     uint8_t pc = CODE_SEGMENT_BEGIN;
     uint8_t data_offset = 0;
-    char *output_hex = "a.hex";
+    char *output_hex = "output.hex";
     StreamObject *sobj = open_stream(output_hex, "w");
     struct adsym *address_symbol_table[255];
     uint8_t c = 0;
@@ -235,11 +254,7 @@ char *assemble(TokenNode *tk)
                     add_table(address_symbol_table, &c, a1);
                 }
                 // variable repetition
-                else
-                {
-                    printf(BRED"Error: %s is repeated\n"RESET, ftk->word);
-                    exit(EXIT_FAILURE);
-                }
+                else error_repetition(ftk->word);
             }
             // pointer call definition ( ex: HRK AX, [v1] )
             else if (ftk->next->type == RSQB)
@@ -248,10 +263,7 @@ char *assemble(TokenNode *tk)
 
                 //printf("[%s]\n", ftk->word);
                 if (!in_table(address_symbol_table, c, ftk->word))
-                {
-                    printf(BRED"%s is not in the table\n"RESET, ftk->word);
-                    exit(EXIT_FAILURE);
-                }
+                    error_notintable(ftk->word);
                 ftk = ftk->next->next;
             }
             // label definition ( ex: LOP: )
@@ -266,12 +278,12 @@ char *assemble(TokenNode *tk)
 
                     add_table(address_symbol_table, &c, a1);
                 }
+                else error_repetition(ftk->word);
+
                 ftk = ftk->next;
             }
             // label call definition ( ex: SS LOP )
-            else if (ftk->next->type == NEWLINE || ftk->next->type == ENDMARKER)
-            {
-            }
+            else if (ftk->next->type == NEWLINE || ftk->next->type == ENDMARKER);
         }
         else
         {
@@ -316,7 +328,7 @@ char *assemble(TokenNode *tk)
     {
         if (ftk->type == LABEL)
         {
-            if (ftk->next->type == NEWLINE || ftk->next->type == ENDMARKER || ( (ftk->next->type == RSQB && ftk->next->next->type == NEWLINE) || (ftk->next->type == RSQB && ftk->next->next->type == ENDMARKER)))
+            if (ftk->next->type == NEWLINE || ftk->next->type == ENDMARKER || ((ftk->next->type == RSQB && ftk->next->next->type == NEWLINE) || (ftk->next->type == RSQB && ftk->next->next->type == ENDMARKER)))
             {
                 struct adsym *tmp = get_from_table(address_symbol_table, c, ftk->word);
 
@@ -326,12 +338,7 @@ char *assemble(TokenNode *tk)
                     sprintf(ftk->word, "%02X", h(tmp->address));
                     ftk->type = ADDRESS;
                 }
-                else
-                {
-                    printf(BRED"\n'%s' is not in the reserved table."RESET, ftk->word);
-                    return NULL;
-                    exit(EXIT_FAILURE);
-                }
+                else error_notintable(ftk->word);
             }
         }
         ftk = ftk->next;
@@ -404,7 +411,6 @@ char *assemble(TokenNode *tk)
                     }
                     bool b = 0;
 
-                    //printf("%s %s\t%02X %02X\n", ins, addr, tmp1, tmp2);
                     for (int j = 0; j < INSTRUCTION_OFFSET; j++)
                     {
                         uint8_t t = h(reserved_instruction_table[i][j]);
@@ -412,11 +418,7 @@ char *assemble(TokenNode *tk)
                             b = 1;
                     }
 
-                    if (b == 0)
-                    {
-                        printf(BRED"error: not in the reserved table"RESET);
-                        exit(EXIT_FAILURE);
-                    }
+                    if (b == 0) error_notinreservedtable();
 
                     char w1[3];
                     sprintf(w1, "%02X", tmp1);
