@@ -19,7 +19,7 @@ static void error_repetition(char *str)
 
 static void error_notintable(char *str)
 {
-    printf(BRED "\nError: %s is not in the adress-symbol table\n" RESET, str);
+    printf(BRED "\nError: %s is not in the address-symbol table\n" RESET, str);
     exit(EXIT_FAILURE);
 }
 
