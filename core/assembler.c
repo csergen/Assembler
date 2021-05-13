@@ -42,7 +42,11 @@ int main(int argc, char **argv)
     free(m_file_path);
     free(f_source);
     close_stream(streamObject);
+	
+#ifdef _WIN32
+	printf("\nPress enter to exit...");
+	getc(stdin);
+#endif
 
     return 0;
-	
 }
