@@ -23,6 +23,5 @@ char *argparse(int argc, char **argv)
         printf("Enter file path: ");
         scanf("%255[^\n]%*c", buffer);
     }
-  
     return buffer;
 }
