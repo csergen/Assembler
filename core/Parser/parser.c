@@ -66,13 +66,13 @@ memory_stmt()
 {
   if (s_token->type == LSQB)
   {
-    next_token();
-
-    if (s_token->type == LABEL)
+    if (s_token->next->type == LABEL)
     {
 
-      if (s_token->next->type == RSQB) {
-        next_token();
+      if (s_token->next->next->type == RSQB)
+      {
+        next_token(); // label
+        next_token(); // rsqb
         return 1;
       }
     }
@@ -97,17 +97,13 @@ field_stmt(void)
     if (strcmp(s_token->word, "DEG") == 0)
     {
       next_token();
-      if (s_token->type == REGISTER)
-      {
-      }
+      if (s_token->type == REGISTER);
       else if (s_token->type == LSQB)
       {
         if (!memory_stmt())
           return 0;
       }
-      else if (s_token->type == NUMBER || s_token->type == CONSTANT)
-      {
-      }
+      else if (s_token->type == NUMBER || s_token->type == CONSTANT);
       else
         return 0;
     }
@@ -122,22 +118,29 @@ field_stmt(void)
       next_token();
       if (s_token->type != REGISTER)
         return 0;
-      next_token();
-    }
 
-    if (s_token->type == COMMA)
-    {
       next_token();
 
-      if (s_token->type == NUMBER || s_token->type == CONSTANT)
+      if (s_token->type == COMMA)
       {
-      }
-      else if (s_token->type == LSQB)
-      {
-        if (memory_stmt() == 0)
-          return 0;
-      }
-      else if (s_token->type != REGISTER)
+        if (s_token->next->type == NUMBER || s_token->next->type == CONSTANT)
+        {
+          next_token();
+        }
+        else if (s_token->next->type == LSQB)
+        {
+          next_token();
+          if (memory_stmt() == 0)
+            return 0;
+        }
+        else if (s_token->next->type == REGISTER)
+        {
+          next_token();
+        }
+        else return 0;
+
+      } 
+      else
         return 0;
     }
 
@@ -161,9 +164,7 @@ program_stmt(void)
       next_token();
     else if (s_token->type == ENDMARKER)
       return;
-    else if (field_stmt())
-    {
-    }
+    else if (field_stmt());
     else
     {
       perror(RED "Error " RESET);

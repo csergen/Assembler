@@ -19,11 +19,8 @@ int main(int argc, char **argv)
 
     TokenNode *tk = tokenize(f_source);
 
-
     if (tk == NULL)
-    {
-        perror("error: tokenize");
-    }
+        perror("error: tokenize failed");
     else
     {
         TokenNode *tk_iter = tk;
@@ -31,6 +28,7 @@ int main(int argc, char **argv)
         printf("\n");
         parse(tk_iter, f_source);
         char *executable_file = assemble(tk_iter);
+
         if (executable_file)
         {
             printf("\nPress enter to run the code...");

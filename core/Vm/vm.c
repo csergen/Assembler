@@ -194,7 +194,7 @@ static inline int8_t divi(int8_t s1, int8_t s2)
 {
     if (s2 == 0)
     {
-        printf(RED "Division by zero: unexpected" RESET);
+        printf(BRED "\nError: Division by zero\n"RESET);
         exit(EXIT_FAILURE);
     }
 
@@ -204,21 +204,20 @@ static inline int8_t divi(int8_t s1, int8_t s2)
 // ##################### MEMORY | REGISTER DUMP ######################
 static void MEMDUMP()
 {
-#ifdef _WIN32
-	printf(RED "\n--------------------------------------------Memory-------\n" RESET);
-#else
-	printf(RED "\n─────────────────────────────────────────────Memory───────\n" RESET);
-#endif
-    
-
     int i, j = 1;
+
+	printf(RED "\n--------------------------------------------Memory--------\n" RESET);
     printf(WHITE "00\t%s\n" RESET, MEMORY[0]);
 
     for (i = 1; i <= CODE_SEGMENT_END; i += 2)
     {
         printf("%02x\t", i);
         if (RPC == i)
+#ifdef _WIN32
+            printf("[ %s %s ]\n", MEMORY[j], MEMORY[j + 1]);
+#else
             printf(GRN "%s %s\n" RESET, MEMORY[j], MEMORY[j + 1]);
+#endif
         else
             printf("%s %s\n", MEMORY[j], MEMORY[j + 1]);
 
@@ -238,11 +237,7 @@ static void REGDUMP()
     char *bin_rtr = BIN(RTR);
     char *bin_rpc = BIN(RPC);
 
-#ifdef _WIN32
 	printf(BLUE "\n------------------------------------------Registers-------\n" RESET);
-#else
-	printf(BLUE "\n──────────────────────────────────────────Registers───────\n" RESET);
-#endif
     printf("AX\t%s\t%02X\t%d\n" RESET, bin_rax, h(RAX), RAX);
     printf(WHITE "BX\t%s\t%02X\t%d\n" RESET, bin_rbx, h(RBX), RBX);
     printf("CX\t%s\t%02X\t%d\n", bin_rcx, h(RCX), RCX);
@@ -555,7 +550,6 @@ static void run()
 #else
 	system("clear");
 #endif
-        //printf("\e[1;1H\e[2J");
         MEMDUMP();
         ftdcex();
         REGDUMP();
@@ -568,7 +562,7 @@ void load_program(char *executable)
     StreamObject *streamObject = open_stream(executable, "r");
     if (streamObject == NULL)
     {
-        printf("something went wrong!\n");
+        printf(BRED"\nError: executable file is null.\n"RESET);
         exit(EXIT_FAILURE);
     }
 
