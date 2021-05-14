@@ -444,15 +444,19 @@ static void ftdcex()
         {
         case AX:
             RAX = RAX & RDR;
+            RTR = RAX;
             break;
         case BX:
             RBX = RBX & RDR;
+            RTR = RBX;
             break;
         case CX:
             RCX = RCX & RDR;
+            RTR = RCX;
             break;
         case DX:
             RDX = RDX & RDR;
+            RTR = RDX;
             break;
         }
         break;
@@ -461,15 +465,19 @@ static void ftdcex()
         {
         case AX:
             RAX = RAX | RDR;
+            RTR = RAX;
             break;
         case BX:
             RBX = RBX | RDR;
+            RTR = RBX;
             break;
         case CX:
             RCX = RCX | RDR;
+            RTR = RCX;
             break;
         case DX:
             RDX = RDX | RDR;
+            RTR = RDX;
             break;
         }
         break;
